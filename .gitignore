@@ -34,3 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# clojure
+/.calva/
+/.clj-kondo/
+/.cpcache/
+/.lsp/
+/.shadow-cljs/

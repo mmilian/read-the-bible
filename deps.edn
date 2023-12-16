@@ -1,0 +1,13 @@
+{:path ["dev"]
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        babashka/process {:mvn/version "0.4.16"}
+        babashka/fs {:mvn/version "0.3.17"}
+        cheshire/cheshire {:mvn/version "5.11.0"}
+        io.github.matthewdowney/rich-comment-tests {:mvn/version "v1.0.3"}}
+ :aliases
+ {:dev
+  {:extra-deps { 
+   org.clojure/tools.namespace {:mvn/version "1.4.4"}
+   nrepl/nrepl {:mvn/version "1.0.0"}}}
+  :rcf-test {:exec-fn com.mjdowney.rich-comment-tests.test-runner/run-tests-in-file-tree!
+             :exec-args {:dirs #{"src"}}}}}
