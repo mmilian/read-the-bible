@@ -11,7 +11,7 @@ function ResetDatabaseButton() {
         resetDatabase();
       }}
     >
-      <FontAwesomeIcon icon={["fas", "database"]} /> Reset Database
+      <FontAwesomeIcon icon={["fas", "house-laptop"]} /> Reset Database
     </button>
   );
 }
