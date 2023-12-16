@@ -1,6 +1,11 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import { config, library } from "@fortawesome/fontawesome-svg-core";
+import { faB, faCheckSquare, faCoffee, faDatabase, faHouseLaptop, faS, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
+library.add(faB, faS, faHouseLaptop, faCheckSquare, faCoffee, faDatabase, faWindowMaximize)
+config.autoAddCss = false;
 
 const inter = Inter({ subsets: ['latin'] })
 

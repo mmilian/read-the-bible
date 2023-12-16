@@ -1,12 +1,9 @@
 "use client"
 import { useLiveQuery } from 'dexie-react-hooks';
-import { faDatabase } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { db, Path, ReadingItem, ReadingStep, resetDatabase } from './models/db';
 import { PropsWithChildren, useState } from 'react';
-
-
-export function ResetDatabaseButton() {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+function ResetDatabaseButton() {
   return (
     <button
       className="large-button"
@@ -14,12 +11,12 @@ export function ResetDatabaseButton() {
         resetDatabase();
       }}
     >
-      <FontAwesomeIcon icon={faDatabase} /> Reset Database
+      <FontAwesomeIcon icon={["fas", "database"]} /> Reset Database
     </button>
   );
 }
 
-export function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
+function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
 
   const progressList = useLiveQuery(
     () => db.progress.where({ readingId: item.id }).toArray(),
