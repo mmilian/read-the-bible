@@ -1,13 +1,15 @@
 (ns user
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]
-            [cheshire.core :as json]))
+  (:require [babashka.http-client :as http]
+            [cheshire.core :as json]
+            [clojure.java.io :as io]
+            [clojure.pprint :as pprint :refer [pprint]]
+            [clojure.string :as str]))
 
 (def input-data
   [["Abraham" "Historia biblijna zaczyna się od Abrahama. Niezwykły człowiek wiary i modlitwy, pierwszy z patriarchów. Bezgranicznie zaufał Bogu, który niejednokrotnie do niego przemawiał. Sędziwy Abraham nazywany jest ojcem narodów."
     {:thread ["Rdz 12-13"
-              "Rdz 18, 1-15"
-              "Rdz 21, 1-8"]
+              "Rdz 18,1-15"
+              "Rdz 21,1-8"]
      :spine ["Rdz 12-14"
              "Rdz 15-19"
              "Rdz 21-22"]}]
@@ -116,21 +118,21 @@
              "2Krn 10-12"
              "2Krl 17"]}]])
 
-(defn create-step [data]
+(defn- create-step [data]
   {:id (str/lower-case (str/replace (first data) " " "-"))
    :title (first data)
    :introduction (second data)})
 
-(defn create-items [step-id passages path-type counter]
-  (map (fn [passage]
-         (assoc {:id (str step-id "-" counter)
-                 :stepId step-id
-                 :path path-type
-                 :passages passage}
-                :id (str step-id "-" (swap! counter inc))))
-       passages))
+(defn- create-items [step-id passages path-type counter]
+  (mapv (fn [passage]
+          (assoc {:id (str step-id "-" counter)
+                  :stepId step-id
+                  :path path-type
+                  :passages passage}
+                 :id (str step-id "-" (swap! counter inc))))
+        passages))
 
-(defn process-input [input-data]
+(defn parse-input-readings [input-data]
   (let [steps (mapv create-step input-data)
         counter (atom 1)
         items (mapcat (fn [[title _ {:keys [thread spine]}]]
@@ -140,18 +142,239 @@
                       input-data)]
     {:steps steps :items items}))
 
+(comment
+  (pprint/pprint (parse-input-readings input-data))
+  :end)
+
 
 (defn write-json [data file-path]
   (with-open [writer (io/writer file-path)]
     (json/generate-stream data writer)))
 
+
+
+(defn read-json [file-path]
+  (with-open [reader (io/reader file-path)]
+    (doall (json/parse-stream reader true))))
+
+
+
+
+
 (defn -main []
-  (let [parsed-data (process-input input-data)
+  (let [parsed-data (parse-input-readings input-data)
         json-file-path "biblical_passages.json"]
     (write-json parsed-data json-file-path)
     (println "File saved to" json-file-path)))
 
-
 (comment
   (-main)
-  :end )
+  :end)
+
+(defn- extract-items [[from to]]
+  (let [from (Integer/parseInt from)
+        to (when to (Integer/parseInt to))]
+    (if (nil? to)
+      [from]
+      (into [] (range from (inc to))))))
+
+
+;; extract from passages "Rdz 12-14" :book "Rdz" :chapters [12 13 14]
+(defn extract-book-chapters [passage]
+  (let
+   [book-chapters (str/split passage #" ")]
+    {:book (first book-chapters)
+     :chapters (let [chapter-and-verses (second book-chapters)
+                     [chapter verses] (str/split chapter-and-verses #",")]
+                 (if (nil? verses)
+                   (->
+                    (str/split chapter #"-")
+                    (extract-items))
+                   [{:chapter (Integer/parseInt chapter) :verses (extract-items (str/split verses #"-"))}]))}))
+
+
+(comment
+
+  (extract-book-chapters "Rdz 12")
+  (extract-book-chapters "Rdz 13-18")
+  (extract-book-chapters "Rdz 13,1-18")
+
+  (->> (parse-input-readings input-data)
+       :items
+       (map :passages)
+       (map extract-book-chapters))
+
+  :end)
+
+(defn extract-singles [items]
+  (->> items
+       (map :passages)
+       (map extract-book-chapters)))
+
+(comment
+  (-> (parse-input-readings input-data)
+      :items
+      (extract-singles))
+  :end)
+
+
+(defn fetch-chapter [book chapter]
+  (let [url (str "https://www.biblia.info.pl/api/biblia/bt/" book "/" chapter)]
+    (println "Fetching" url)
+    (->
+     (http/get url)
+     :body
+     (json/parse-string true))))
+
+(comment
+  (def chapter (fetch-chapter "Rdz" "12"))
+  (pprint chapter)
+  (-> chapter  :verses)
+
+  :end)
+
+;; write code to replace polish characters with english ones
+(defn polish-to-english [text]
+  (-> text
+      (str/replace "ą" "a")
+      (str/replace "ć" "c")
+      (str/replace "ę" "e")
+      (str/replace "ł" "l")
+      (str/replace "ś" "s")
+      (str/replace "ń" "n")
+      (str/replace "ó" "o")
+      (str/replace "ż" "z")
+      (str/replace "ź" "z")
+      (str/replace "Ą" "A")
+      (str/replace "Ć" "C")
+      (str/replace "Ę" "E")
+      (str/replace "Ł" "L")
+      (str/replace "Ś" "S")
+      (str/replace "Ń" "N")
+      (str/replace "Ó" "O")
+      (str/replace "Ż" "Z")
+      (str/replace "Ź" "Z")))
+
+
+(defn polish-to-english-2 [text]
+  (let [polish-chars {"ą" "a"
+                      "ć" "c"
+                      "ę" "e"
+                      "ł" "l"
+                      "ś" "s"
+                      "ń" "n"
+                      "ó" "o"
+                      "ż" "z"
+                      "ź" "z"
+                      "Ą" "A"
+                      "Ć" "C"
+                      "Ę" "E"
+                      "Ł" "L"
+                      "Ś" "S"
+                      "Ń" "N"
+                      "Ó" "O"
+                      "Ż" "Z"
+                      "Ź" "Z"}]
+    (->> text
+         (map #(get polish-chars % %))
+         (apply str))))
+
+(comment
+  (polish-to-english "aAąćęłśńóżźĄĆĘŁŚŃÓŻŹ"))
+
+(defn fetch-single [single]
+  (let [book (polish-to-english (single :book))
+        chapters (single :chapters)]
+    (->> chapters
+         (map (fn [chapter]
+                (fetch-chapter book
+                               (if (int? chapter)
+                                 (str chapter)
+                                 (:chapter chapter))))))))
+
+(comment
+  (pprint/pprint (fetch-single {:book "Rdz" :chapters [12 13]}))
+  (pprint/pprint (fetch-single {:book "Rdz", :chapters [{:chapter 13, :verses [1 2]}]})))
+
+
+(defn fetch-all [items]
+  (->> items
+       (mapv :passages)
+       (mapv extract-book-chapters)
+       (mapv fetch-single)
+       (flatten)
+       (doall)))
+
+(comment
+
+  (def bible (fetch-all (-> (parse-input-readings input-data) :items)))
+
+  (pprint (first bible))
+  (write-json bible "all.json")
+  (read-json "all.json")
+
+
+  :end)
+
+
+(defn to-verses [book]
+  (->> book
+       :verses
+       (map (fn [verse]
+              {:verse (Integer/parseInt (verse :verse))
+               :text (verse :text)}))))
+
+(defn to-book-verse [item]
+  (println "to-book-verse")
+  {:bibleAbbr (get-in item [:bible :abbreviation])
+   :bibleName (get-in item [:bible :name])
+   :bookAbbr (get-in item [:book :abbreviation])
+   :bookName (get-in item [:book :name])
+   :chapter (get-in item [:chapter])
+   :verses (mapv (fn [verse]
+                   {:bookAbbr (get-in item [:book :abbreviation])
+                    :chapter (get-in item [:chapter])
+                    :verse (Integer/parseInt (verse :verse))
+                    :text (verse :text)}) (get-in item [:verses]))})
+
+
+(defn chapter-2-verse-view
+  "Return vec containing all flatten verses from given part of the bible "
+  [bible]
+  (->> bible
+       (mapv to-book-verse)
+       (mapv :verses)
+       (reduce concat)
+       (into [])))
+
+
+(comment
+
+  (def book
+    {:bible {:abbreviation "bt", :name "Biblia Tysiąclecia"},
+     :book {:abbreviation "rdz", :name "Księga Rodzaju"},
+     :chapter 12,
+     :type "Wersety",
+     :verses
+     [{:text
+       "Pan rzekł do Abrama: Wyjdź z twojej ziemi rodzinnej i z domu twego ojca do kraju,  który ci ukażę.",
+       :verse "1"}
+      {:text
+       "Uczynię bowiem z ciebie wielki naród,  będę ci błogosławił i twoje imię rozsławię: staniesz się błogosławieństwem.",
+       :verse "2"}
+      {:text
+       "Będę błogosławił tym,  którzy ciebie błogosławić będą,  a tym,  którzy tobie będą złorzeczyli,  i ja będę złorzeczył. Przez ciebie będą otrzymywały błogosławieństwo ludy całej ziemi.",
+       :verse "3"}],
+     :verses_range "1-20"})
+
+
+  (->
+   (read-json "all.json")
+   (chapter-2-verse-view)
+   (write-json "all-verses.json"))
+
+  
+  :end)
+
+
+

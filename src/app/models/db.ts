@@ -25,29 +25,39 @@ export interface ReadingProgress {
   completed: boolean;
 }
 
+export interface Verse {
+  bookAbbr: string;
+  chapter: number;
+  verse: number;
+  text: string;
+}
+
 
 export class ReadingDB extends Dexie {
+
   steps!: Table<ReadingStep, string>;
   items!: Table<ReadingItem, string>;
+  verses!: Table<Verse, string>;
   progress!: Table<ReadingProgress, number>;
 
   constructor() {
     super("ReadingDB");
-    this.version(1).stores({
-        steps: "id",
-        items: "id, path, stepId",
-        progress: "++id, readingId",
+    this.version(2).stores({
+      steps: "id",
+      items: "id, path, stepId",
+      progress: "++id, readingId",
+      verses: "[bookAbbr+chapter+verse]"
     });
   }
-}
+} 
 
 export const db = new ReadingDB();
 
 db.on("populate", populate);
 
 export function resetDatabase() {
-  return db.transaction('rw',  db.items, db.steps, async () => {  //db.progress,
-    await Promise.all([db.items.clear(), db.steps.clear()]);
+  return db.transaction('rw',  db.items, db.steps, db.verses, async () => {  //db.progress,
+    await Promise.all([db.items.clear(), db.steps.clear(), db.verses.clear()]);
     await populate();
   });
 }

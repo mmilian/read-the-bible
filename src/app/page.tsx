@@ -3,6 +3,9 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db, Path, ReadingItem, ReadingStep, resetDatabase } from './models/db';
 import { PropsWithChildren, useState } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
+import Link from 'next/link';
+
 function ResetDatabaseButton() {
   return (
     <button
@@ -11,7 +14,7 @@ function ResetDatabaseButton() {
         resetDatabase();
       }}
     >
-      <FontAwesomeIcon icon={["fas", "house-laptop"]} /> Reset Database
+      Reset database
     </button>
   );
 }
@@ -45,17 +48,21 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
         />
       </div>
       <div className="todo-item-text">{item.passages}</div>
+      <div className="narrow">
+        <Link href={`/reading/${item.passages}`}>
+          <FontAwesomeIcon icon={faBookOpenReader} size="sm" />
+        </Link>
+      </div>
     </div>
   );
 }
 
 
-function StepView({ step, path }: PropsWithChildren<{ step: ReadingStep, path: Array<string> }>) {
+function StepView({ step, path }: PropsWithChildren<{ step: ReadingStep, path: string }>) {
   const items = useLiveQuery(
-    () => db.items.where({ stepId: step.id}).toArray(),
+    () => db.items.where({ stepId: step.id }).toArray(),
     [step.id]
   );
-
   if (!items) return null;
 
   return (
@@ -68,16 +75,10 @@ function StepView({ step, path }: PropsWithChildren<{ step: ReadingStep, path: A
       </div>
 
       <div>
-        <h3> {path[0]  === Path.Thread ? Path.Thread : ""}</h3>
-        {items.filter(el => el.path === path[0]).map(item => (
+        <h3> {path}</h3>
+        {items.filter(el => el.path === path).map(item => (
           <ReadingItemView key={item.id} item={item} />
         ))}
-        <div>
-        <h3> {path[1]  === Path.Spine ? Path.Spine : ""}</h3>
-        {items.filter(el => el.path === path[1]).map(item => (
-          <ReadingItemView key={item.id} item={item} />
-        ))}
-      </div>
       </div>
     </div>
   );
@@ -85,6 +86,13 @@ function StepView({ step, path }: PropsWithChildren<{ step: ReadingStep, path: A
 
 
 function Steps() {
+
+  const [selectedPath, setSelectedPath] = useState<Path>(Path.Thread);
+
+  const handlePathChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedPath(event.target.value as Path);
+    // Add your logic here
+  };
 
   const [path, setPath] = useState({ thread: true, spine: false });
   const handlePathChange1 = () => {
@@ -99,26 +107,21 @@ function Steps() {
   return (
     <div>
       <div>
-        <div>
-          <input
-            type="checkbox"
-            checked={path.thread}
-            onChange={handlePathChange1}
-          />
-          <label htmlFor="checkbox1">{ Path.Thread }</label>
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            checked={path.spine}
-            onChange={handlePathChange2}
-          />
-          <label htmlFor="checkbox2">{ Path.Spine }</label>
-        </div>
+        <select value={selectedPath} 
+        onChange={handlePathChange}
+        style={{
+          fontSize: '18px', // Increase font size
+          padding: '10px',  // Add some padding
+          width: '200px',   // Set a specific width
+          height: '50px'    // Set a specific height
+        }}>
+          <option value={Path.Thread}>{Path.Thread}</option>
+          <option value={Path.Spine}>{Path.Spine}</option>
+        </select>
       </div>
       <div>
         {steps.map(step => (
-          <StepView key={step.id} step={step} path={[path.thread ? Path.Thread : "no", path.spine ? Path.Spine : "no" ] as Array<string>} />
+          <StepView key={step.id} step={step} path={selectedPath} />
         ))}
       </div>
     </div>
@@ -135,43 +138,3 @@ export default function Home() {
   )
 }
 
-// export default function Home() {
-//   return (
-//     <main className="flex min-h-screen flex-col items-center justify-between p-1 overflow-y-scroll">
-//       <section className="min-w-full bg-slate-100 rounded-md ">
-//         <h1>My Heading 1</h1>
-//         <ul className="list-disc list-inside p-1 divide-y divide-gray-500">
-//           <li className="bg-red-400 rounded-md p-1 border-2">Item 1</li>
-//           <li className="bg-green-400 rounded-md p-1 border-2">Item 2</li>
-//           <li className="bg-blue-400 rounded-md p-1 border-2">Item 3</li>
-//           <li className="flex justify-between gap-x-6 py-5">
-//             <div className="flex min-w-0 gap-x-4">
-//               <div className="min-w-0 flex-auto">
-//                 <p className="text-sm font-semibold leading-6 text-gray-900">Michael Foster</p>
-//                 <p className="mt-1 truncate text-xs leading-5 text-gray-500">michael.foster@example.com</p>
-//               </div>
-//             </div>
-//             <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-//               <p className="text-sm leading-6 text-gray-900">Co-Founder / CTO</p>
-//               <p className="mt-1 text-xs leading-5 text-gray-500">Last seen </p>
-//               {/* <time datetime="2023-01-23T13:23Z">3h ago</time> */}
-//             </div>
-//           </li>
-//           <li className="flex justify-between gap-x-6 py-5">
-//             <div className="flex min-w-0 gap-x-4">
-//               <div className="min-w-0 flex-auto">
-//                 <p className="text-sm font-semibold leading-6 text-gray-900">Michael Foster</p>
-//                 <p className="mt-1 truncate text-xs leading-5 text-gray-500">michael.foster@example.com</p>
-//               </div>
-//             </div>
-//             <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-//               <p className="text-sm leading-6 text-gray-900">Co-Founder / CTO</p>
-//               <p className="mt-1 text-xs leading-5 text-gray-500">Last seen </p>
-//               {/* <time datetime="2023-01-23T13:23Z">3h ago</time> */}
-//             </div>
-//           </li>
-//         </ul>
-//       </section>
-//     </main>
-//   )
-// }
