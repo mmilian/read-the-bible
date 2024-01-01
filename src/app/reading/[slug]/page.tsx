@@ -32,12 +32,11 @@ function verseRange(verses: number[]): [number, number] {
 
 
 export default function Page({ params }: { params: { slug: string } }) {
-  const slug = params.slug;
-  const book = extractBookChapters(slug);
   const [verses, setVerses] = useState<[string, Verse[]][]>([]);
-
+  const slug = params.slug;
 
   useEffect(() => {
+    const book = extractBookChapters(params.slug);
     console.log("Use efect book", book)
     if (book === undefined) {
       console.log("Book is undefined", book)
@@ -64,7 +63,7 @@ export default function Page({ params }: { params: { slug: string } }) {
       }
     };
     fetchVerses();
-  }, []);
+  }, [params.slug]);
 
   // iterate over verses
 

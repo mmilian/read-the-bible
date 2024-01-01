@@ -4,55 +4,17 @@ import './globals.css'
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config, library } from "@fortawesome/fontawesome-svg-core";
 import { faB, faCheckSquare, faCoffee, faDatabase, faHouseLaptop, faS, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
-library.add(faB, faS, faHouseLaptop, faCheckSquare, faCoffee, faDatabase, faWindowMaximize)
+library.add(faB, faS)
 config.autoAddCss = false;
+
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const APP_NAME = "Read the Bible";
-const APP_DEFAULT_TITLE = "My Awesome Read the Bible";
-const APP_TITLE_TEMPLATE = "%s - Read the Bible";
-const APP_DESCRIPTION = "Best Read the Bible in the world!";
-
 export const metadata: Metadata = {
-  applicationName: APP_NAME,
-  title: {
-    default: APP_DEFAULT_TITLE,
-    template: APP_TITLE_TEMPLATE,
-  },
-  description: APP_DESCRIPTION,
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: APP_DEFAULT_TITLE,
-    // startUpImage: [],
-  },
-  formatDetection: {
-    telephone: false,
-  },
-  openGraph: {
-    type: "website",
-    siteName: APP_NAME,
-    title: {
-      default: APP_DEFAULT_TITLE,
-      template: APP_TITLE_TEMPLATE,
-    },
-    description: APP_DESCRIPTION,
-  },
-  twitter: {
-    card: "summary",
-    title: {
-      default: APP_DEFAULT_TITLE,
-      template: APP_TITLE_TEMPLATE,
-    },
-    description: APP_DESCRIPTION,
-  },
-};
-
-export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
-};
+  title: 'Read the bible',
+  description: 'Simple app to read the bible',
+}
 
 export default function RootLayout({
   children,
