@@ -26,6 +26,10 @@ button.large-button {
   position: relative;
 }
 
+.grid-row p {
+  font-size: 18px;
+}
+
 .row {
   display: inline-flex;
   border: 1px solid #ccc;
@@ -38,6 +42,10 @@ button.large-button {
 .row.add-item {
   border-style: dashed;
   border-color: #ccc8;
+}
+
+.text p {
+  font-size: 18px;
 }
 
 .done {
@@ -96,4 +104,13 @@ input::placeholder {
   color: #ddd;
   font-style: italic;
   font-weight: normal;
+}
+
+.back-button {
+  display: "inline-block";
+  padding: "5px 5px";
+  text-decoration: "none";
+  background-color: "transparent";
+  border: "none";
+  font-size: "30px";
 }

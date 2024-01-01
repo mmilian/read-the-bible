@@ -69,19 +69,12 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   return (
     <div>
-      <Link href={`/`} style={{
-        display: "inline-block",
-        padding: "5px 5px",
-        textDecoration: "none",
-        backgroundColor: "transparent",
-        border: "none",
-        fontSize: "30px",
-      }}>
+      <Link href={`/`} className="back-button">
        <FontAwesomeIcon icon={faArrowLeft} /> 
       </Link>
       <h1>{decodeURIComponent(slug)}</h1>
       {verses.map((chapterVerse, index) => (
-        <div key={index}>
+        <div className="text" key={index}>
           <h2>{chapterVerse[0]}</h2>
           {chapterVerse[1].map((verse, index) => (
             <p key={index}>{verse.verse} {verse.text}</p>
