@@ -1,7 +1,6 @@
 import Dexie, { Table } from "dexie";
 import { populate } from "./populate";
 
-
 export enum Path {
   Thread = "Nić przewodnia",
   Spine = "Kręgosłup",
@@ -15,9 +14,9 @@ export interface ReadingItem {
 }
 
 export interface ReadingStep {
-    id: string;
-    title: string;
-    introduction: string;
+  id: string;
+  title: string;
+  introduction: string;
 }
 
 export interface ReadingProgress {
@@ -32,9 +31,7 @@ export interface Verse {
   text: string;
 }
 
-
 export class ReadingDB extends Dexie {
-
   steps!: Table<ReadingStep, string>;
   items!: Table<ReadingItem, string>;
   verses!: Table<Verse, string>;
@@ -46,18 +43,21 @@ export class ReadingDB extends Dexie {
       steps: "id",
       items: "id, path, stepId",
       progress: "++id, readingId",
-      verses: "[bookAbbr+chapter+verse]"
+      verses: "[bookAbbr+chapter+verse]",
     });
   }
-} 
+}
 
 export const db = new ReadingDB();
 
 db.on("populate", populate);
 
 export function resetDatabase() {
-  return db.transaction('rw',  db.items, db.steps, db.verses, async () => {  //db.progress,
-    await Promise.all([db.items.clear(), db.steps.clear(), db.verses.clear()]);
+  return db.transaction("rw", db.items, db.steps, db.verses, async () => {
+    await Promise.all([db.items.clear(), db.steps.clear()]);
+    if (db.verses) {
+      await db.verses.clear();
+    }
     await populate();
   });
 }

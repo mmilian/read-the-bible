@@ -371,10 +371,26 @@
   (->
    (read-json "all.json")
    (chapter-2-verse-view)
+   (set)
    (write-json "all-verses.json"))
-
+  
   
   :end)
+
+(comment
+
+  (def verses (read-json "all-verses.json"))
+
+  (def doubles
+    (->> verses
+         (group-by (juxt :verse :chapter :bookAbbr))
+         (filter (fn [[k v]] (> (count v) 1)))))
+  
+  (first doubles)
+
+
+  :end
+  )
 
 
 
