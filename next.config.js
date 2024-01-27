@@ -3,6 +3,7 @@ const withSerwist = require("@serwist/next").default({
     swSrc: "src/app/sw.ts",
     swDest: "public/sw.js",
     cacheOnFrontEndNav: true,
+    additionalPrecacheEntries: ["/reading/1Sm%2013"]
 });
 
 
