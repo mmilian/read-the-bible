@@ -1,6 +1,10 @@
-import { ReadingItem, ReadingStep, Verse } from "./db";
+import { ReadingItem as ReadingStepItem, ReadingStep, Verse } from "./db";
 
-
+export enum PATH {
+    Thread = "Nić przewodnia",
+    Spine = "Kręgosłup",
+  }
+  
 export const VERSES: Verse[] = 
 [
     {
@@ -25715,12 +25719,7 @@ export const VERSES: Verse[] =
     }
 ]
 
-export enum PATH {
-    Thread = "Nić przewodnia",
-    Spine = "Kręgosłup",
-  }
-  
-export  const STEPS: ReadingStep[] = [
+export const STEPS: ReadingStep[] = [
     {
       id: "abraham",
       title: "Abraham",
@@ -25789,7 +25788,7 @@ export  const STEPS: ReadingStep[] = [
     },
   ];
 
-  export const ITEMS: ReadingItem[] = [
+  export const STEP_ITEMS: ReadingStepItem[] = [
     {
       id: "abraham-2",
       stepId: "abraham",

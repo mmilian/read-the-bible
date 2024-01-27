@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
-import { Verse, db } from "../../models/db";
-import { extractBookChapters } from "../../models/utils";
+import { ReadingDB, Verse, db } from "../../models/db";
+import { Chapter, extractBookChapters } from "../../models/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Link from 'next/link';
@@ -10,6 +10,7 @@ import Link from 'next/link';
 type MapValuesToKeysIfAllowed<T> = {
   [K in keyof T]: T[K] extends PropertyKey ? K : never;
 };
+
 type Filter<T> = MapValuesToKeysIfAllowed<T>[keyof T];
 
 function groupBy<T extends Record<PropertyKey, any>, Key extends Filter<T>>(
@@ -26,10 +27,48 @@ function groupBy<T extends Record<PropertyKey, any>, Key extends Filter<T>>(
   }, {} as Record<T[Key], T[]>);
 }
 
+const sortByChapterAndVerse = (verseArr: Verse[]) => {
+  const sortedVerseArr = groupBy(verseArr, "chapter");
+  return Object.entries(sortedVerseArr).sort(
+    ([keyA], [keyB]) => parseInt(keyA) - parseInt(keyB)
+  );
+};
+
 function verseRange(verses: number[]): [number, number] {
   return [verses[0], verses[verses.length - 1]];
 }
 
+async function fetchVerseRangeFromChapter(db: ReadingDB, bookName: string, chapter: number, verseFrom: number, verseTo: number) {
+  return db.verses
+    .where(["bookAbbr", "chapter", "verse"])
+    .between(
+      [bookName, chapter, verseFrom],
+      [bookName, chapter, verseTo],
+      true,
+      true
+    )
+    .toArray().then((verseArr) => sortByChapterAndVerse(verseArr));
+};
+
+
+async function fetchChapters(db: ReadingDB, bookName: string, chapterFrom: number, chapterTo: number) {
+  return db.verses
+    .where(["bookAbbr", "chapter"])
+    .between([bookName, chapterFrom], [bookName, chapterTo], true, true)
+    .toArray().then((verseArr) => sortByChapterAndVerse(verseArr));
+};
+
+function isOneChapterWithVerses(chapters: Chapter[]) {
+  return (chapters.length === 1) && (chapters[0].verses.length === 2);
+}
+
+function isWholeChapter(book: { name: string; chapters: Chapter[]; }) {
+  return (book.chapters.length === 1) && (book.chapters[0].verses.length === 0);
+}
+
+function areChapters(book: { name: string; chapters: Chapter[]; }) {
+  return book.chapters.length === 2;
+}
 
 export default function Page({ params }: { params: { slug: string } }) {
   const [verses, setVerses] = useState<[string, Verse[]][]>([]);
@@ -43,25 +82,20 @@ export default function Page({ params }: { params: { slug: string } }) {
       return;
     }
     const fetchVerses = async () => {
-      if (book.chapters.length === 1) {
+      let chapterWithVerses: [string, Verse[]][] = [];
+      if (isOneChapterWithVerses(book.chapters)) {
         const chapter = book.chapters[0];
-        const verseArr = await db.verses.where(["bookAbbr", "chapter", "verse"])
-          .between([book.name, chapter.nr, chapter.verses[0]], [book.name, chapter.nr, chapter.verses[1]], true, true).toArray();
-        console.log("verseArr", verseArr)
-        const sorstedVerseArr = groupBy(verseArr, "chapter")
-        const chapterVerse = Object.entries(sorstedVerseArr).sort(([keyA], [keyB]) => parseInt(keyA) - parseInt(keyB))
-        setVerses(chapterVerse);
-      } else {
-        const from = book.chapters[0];
-        const to = book.chapters[1];
-        const verseArr = await db.verses.where(["bookAbbr", "chapter"])
-          .between([book.name, from.nr], [book.name, to.nr], true, true).toArray();
-        console.log("verseArr", verseArr)
-        const sorstedVerseArr = groupBy(verseArr, "chapter")
-        const chapterVerse = Object.entries(sorstedVerseArr).sort(([keyA], [keyB]) => parseInt(keyA) - parseInt(keyB))
-        setVerses(chapterVerse);
-      }
-    };
+        chapterWithVerses = await fetchVerseRangeFromChapter(db, book.name, chapter.nr, chapter.verses[0], chapter.verses[1]);
+      } else if (isWholeChapter(book)) {
+        chapterWithVerses = await fetchChapters(db, book.name, book.chapters[0].nr, book.chapters[0].nr);
+        setVerses(chapterWithVerses);
+      } else if (areChapters(book)) {
+        chapterWithVerses = await fetchChapters(db, book.name, book.chapters[0].nr, book.chapters[1].nr);
+        setVerses(chapterWithVerses);
+      } else
+        console.log("Not expected state. Should be one chapter with verses or whole chapter or chapters");
+      setVerses(chapterWithVerses);
+    }
     fetchVerses();
   }, [params.slug]);
 
@@ -70,7 +104,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   return (
     <div>
       <Link href={`/`} className="back-button">
-       <FontAwesomeIcon icon={faArrowLeft} /> 
+        <FontAwesomeIcon icon={faArrowLeft} />
       </Link>
       <h1>{decodeURIComponent(slug)}</h1>
       {verses.map((chapterVerse, index) => (
@@ -83,4 +117,8 @@ export default function Page({ params }: { params: { slug: string } }) {
       ))}
     </div>
   );
+
+
+
+
 }

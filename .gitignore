@@ -48,3 +48,9 @@ biblia.json
 biblical_passages.json
 biblical_passages.json
 biblical_passages.json
+
+**/public/serwist**
+**/public/sw**
+**/public/worker**
+**/public/fallback**
+**/public/precache**

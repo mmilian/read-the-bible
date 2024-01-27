@@ -67,7 +67,9 @@
 
 ["Saul"
  "Pierwszy król Izraela, namaszczony na tę funkcję przez ostatniego z sędziów – Samuela. Przywódca, który zmierzył się z Filistynami i zjednoczył plemiona Izraela. Niestety głosu ludu lękał się bardziej niż głosu Boga, przez co przyszło mu wiele stracić…"
- {:thread ["1Sm 9,15-10,12"
+ {:thread ["1Sm 9,15-9,27"
+           "1Sm 10,1-12"
+           "1Sm 12"
            "1Sm 13"
            "1Sm 14,47-52"]
   :spine ["1Sm 7-12"
@@ -107,7 +109,8 @@
            "1Krl 12"
            "2Krl 17,1-6"]
   :spine ["1Krl 13,1-10"
-          "1Krl 15,25-16,28"
+          "1Krl 15,25-34"
+          "1Krl 16,1-28"
           "2Krn 10-12"
           "2Krl 17"]}]]
 

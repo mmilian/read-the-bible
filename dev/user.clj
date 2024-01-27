@@ -132,7 +132,7 @@
                  :id (str step-id "-" (swap! counter inc))))
         passages))
 
-(defn parse-input-readings [input-data]
+(defn parse-book-input [input-data]
   (let [steps (mapv create-step input-data)
         counter (atom 1)
         items (mapcat (fn [[title _ {:keys [thread spine]}]]
@@ -143,14 +143,22 @@
     {:steps steps :items items}))
 
 (comment
-  (pprint/pprint (parse-input-readings input-data))
+  (pprint/pprint (parse-book-input input-data))
+
+;; output
+;; {:id "saul-50",
+;;  :stepId "saul",
+;;  :path "Nić przewodnia",
+;;  :passages "1Sm 13"} 
+
   :end)
+
+
 
 
 (defn write-json [data file-path]
   (with-open [writer (io/writer file-path)]
     (json/generate-stream data writer)))
-
 
 
 (defn read-json [file-path]
@@ -159,10 +167,8 @@
 
 
 
-
-
 (defn -main []
-  (let [parsed-data (parse-input-readings input-data)
+  (let [parsed-data (parse-book-input input-data)
         json-file-path "biblical_passages.json"]
     (write-json parsed-data json-file-path)
     (println "File saved to" json-file-path)))
@@ -199,12 +205,14 @@
   (extract-book-chapters "Rdz 13-18")
   (extract-book-chapters "Rdz 13,1-18")
 
-  (->> (parse-input-readings input-data)
-       :items
-       (map :passages)
-       (map extract-book-chapters))
+  (pprint/pprint
+   (->> (parse-book-input input-data)
+        :items
+        (map :passages)
+        (map extract-book-chapters)))
 
-  :end)
+  :end
+  )
 
 (defn extract-singles [items]
   (->> items
@@ -212,7 +220,7 @@
        (map extract-book-chapters)))
 
 (comment
-  (-> (parse-input-readings input-data)
+  (-> (parse-book-input input-data)
       :items
       (extract-singles))
   :end)
@@ -293,6 +301,7 @@
                                  (:chapter chapter))))))))
 
 (comment
+  (pprint/pprint (fetch-single {:book "Rdz" :chapters [12]}))
   (pprint/pprint (fetch-single {:book "Rdz" :chapters [12 13]}))
   (pprint/pprint (fetch-single {:book "Rdz", :chapters [{:chapter 13, :verses [1 2]}]})))
 
@@ -307,7 +316,7 @@
 
 (comment
 
-  (def bible (fetch-all (-> (parse-input-readings input-data) :items)))
+  (def bible (fetch-all (-> (parse-book-input input-data) :items)))
 
   (pprint (first bible))
   (write-json bible "all.json")
