@@ -1,116 +1,341 @@
+/* RESET */
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent font size inflation */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+/* Remove default margin in favour of better control in authored CSS */
+body,
 h1,
-p {
-  font-family: Lato;
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin-block-end: 0;
 }
 
-div.box {
-  padding: 10px;
-  border: 1px solid #ddd;
-  margin: 5px 0 5px 0;
-  position: relative;
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
 }
 
-div.box > h2 {
-  margin: 0 0 10px 0;
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
 }
 
-button.large-button {
-  padding: 10px;
-  margin: 5px 5px 5px 0;
-  font-size: 12pt;
+/* Set shorter line heights on headings and interactive elements */
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+label {
+  line-height: 1.1;
 }
 
-.grid-row {
-  display: inline-flex;
-  width: 100%;
-  position: relative;
+/* Balance text wrapping on headings */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
 }
 
-.grid-row p {
-  font-size: 18px;
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+  color: currentColor;
 }
 
-.row {
-  display: inline-flex;
-  border: 1px solid #ccc;
-  margin: 2px;
-  transition-duration: 100ms;
-  font-size: 20pt;
-  width: 100%;
-  position: relative;
-}
-.row.add-item {
-  border-style: dashed;
-  border-color: #ccc8;
-}
-
-.text p {
-  font-size: 18px;
-}
-
-.done {
-  background-color: #ccf;
-}
-
-.narrow {
-  padding: 10px;
-}
-
-.todo-item-text {
-  width: 50vw;
-  padding: 10px;
-}
-
-input[type="checkbox"] {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 25px;
-  width: 25px;
-  border: 1px solid #ccf;
-  outline: none;
-  transition-duration: 0.3s;
-  cursor: pointer;
-}
-
-input[type="checkbox"]:checked {
-  border: 1px solid #41b883;
-  background-color: #fff;
-}
-
-input[type="checkbox"]:checked::after {
-  content: "\2713";
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
   display: block;
-  font-size: 25px;
-  text-align: center;
-  color: #ccf;
-  position: relative;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Make sure textareas without a rows attribute are not tiny */
+textarea:not([rows]) {
+  min-height: 10em;
+}
+
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 5ex;
+}
+
+/* Tokens */
+:root {
+  --color-primary-h: 6deg;
+  --color-primary-s: 93%;
+  --color-primary-l: 42%;
+  --color-primary: hsl(
+    var(--color-primary-h) var(--color-primary-s) var(--color-primary-l)
+  );
+
+  --color-secondary: #08bace;
+  --color-white: #fff;
+
+  --gray-h: var(--color-primary-h);
+  --gray-s: 10%;
+  --gray-100: hsl(var(--gray-h) var(--gray-s) 95%);
+  --gray-200: hsl(var(--gray-h) var(--gray-s) 92%);
+  --gray-300: hsl(var(--gray-h) var(--gray-s) 90%);
+  --gray-400: hsl(var(--gray-h) var(--gray-s) 85%);
+  --gray-500: hsl(var(--gray-h) var(--gray-s) 75%);
+  --gray-600: hsl(var(--gray-h) var(--gray-s) 40%);
+  --gray-700: hsl(var(--gray-h) var(--gray-s) 25%);
+  --gray-800: hsl(var(--gray-h) var(--gray-s) 20%);
+  --gray-900: hsl(var(--gray-h) var(--gray-s) 10%);
+  --gray-1000: hsl(var(--gray-h) var(--gray-s) 5%);
+
+  --gutter: 1rem;
+  --gutter-100: calc(0.5 * var(--gutter));
+  --gutter-200: calc(0.75 * var(--gutter));
+  --gutter-300: calc(1.5 * var(--gutter));
+
+  --radii: 0.5rem;
+  --radii-full: 9999px;
+
+  --font-family-primary: system-ui, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+  --fs-100: 1.15rem;
+  --fs-200: 1.5rem;
+  --fs-300: 1.75rem;
+  --fs-400: clamp(1.5rem, 1.43vw + 1.09rem, 2.38rem);
+
+  --zindex-nav: 100;
+}
+
+/* Semantic Tokens */
+:root {
+  --color-text: var(--gray-900);
+  --color-text-light: var(--gray-600);
+  --color-text-contrast: var(--color-white);
+  --color-bg: var(--gray-100);
+  --color-surface-bg: var(--color-white);
+  --color-border: var(--gray-300);
+  --color-shadow: var(--gray-500);
+
+  --border-width: 1px;
+  --border: var(--border-width) solid var(--color-border);
+  --shadow: 0 0 15px color-mix(in srgb, var(--color-shadow) 70%, transparent);
+  --shadow-100: 0 3px 5px
+    color-mix(in srgb, var(--color-shadow) 20%, transparent);
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-100);
+  background-color: var(--color-bg);
+  font-family: var(--font-family-primary);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  right: 0;
   left: 0;
-  top: -3px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gutter);
+  padding: var(--gutter-100) var(--gutter);
+  background-color: var(--color-surface-bg);
+  box-shadow: var(--shadow);
+  z-index: var(--zindex-nav);
 }
 
-input[type="checkbox"]:disabled {
-  border-color: #ccf4;
+.logo {
+  line-height: 1;
 }
 
-input[type="text"] {
-  border-color: #ccf4;
-  height: 25px;
-  width: 100%;
-  outline: none;
-  font-size: 20pt;
+.logoSignature {
+  fill: var(--color-primary);
 }
 
-input::placeholder {
-  color: #ddd;
-  font-style: italic;
-  font-weight: normal;
+.logoName {
+  fill: var(--text);
 }
 
-.back-button {
-  display: "inline-block";
-  padding: "5px 5px";
-  text-decoration: "none";
-  background-color: "transparent";
-  border: "none";
-  font-size: "30px";
+.main {
+  display: flex;
+  flex-direction: column;
+  padding: var(--gutter);
+  gap: var(--gutter);
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: bold;
+  text-wrap: balance;
+  max-width: 60ch;
+  font-size: var(--fs-400);
+}
+
+h2 {
+  font-size: var(--fs-300);
+}
+
+h3 {
+  font-size: var(--fs-300);
+}
+
+.form-control {
+  accent-color: var(--color-primary);
+  border: var(--border);
+  border-radius: var(--radii);
+  padding: var(--gutter-100);
+
+  &[type="checkbox"] {
+    --size: 1.375rem;
+
+    width: var(--size);
+    height: var(--size);
+  }
+}
+
+.form-select {
+  display: block;
+  accent-color: var(--color-primary);
+  border: var(--border);
+  border-radius: var(--radii);
+  padding: var(--gutter-100) 2.5rem var(--gutter-100) var(--gutter);
+  appearance: none;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNiAxNic+PHBhdGggZmlsbD0nbm9uZScgc3Ryb2tlPScjMzQzYTQwJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5lam9pbj0ncm91bmQnIHN0cm9rZS13aWR0aD0nMicgZD0nTTIgNWw2IDYgNi02Jy8+PC9zdmc+);
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+}
+
+.btn {
+  display: inline-flex;
+  gap: var(--gutter-100);
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter-100) var(--gutter);
+  background-color: var(--color-primary);
+  color: var(--color-text-contrast);
+  border: var(--border);
+  border-radius: var(--radii);
+  transition: background-color var(--g-transition), color var(--g-transition);
+  user-select: none;
+  text-decoration: none;
+}
+
+.card {
+  padding: var(--gutter);
+  border-radius: var(--radii);
+  background-color: var(--color-surface-bg);
+  box-shadow: var(--shadow-100);
+}
+
+.readingTitle {
+  margin-top: var(--gutter-300);
+  background-image: linear-gradient(
+    to left,
+    var(--color-text-light),
+    var(--color-text)
+  );
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  text-shadow: var(--shadow-100);
+}
+
+.readingDescription {
+  color: var(--color-text-light);
+}
+
+.readingList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gutter-200);
+  margin-top: var(--gutter);
+}
+
+.readingItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--gutter-100);
+  transition-duration: background-color 100ms;
+  font-size: var(--fs-200);
+  border: var(--border);
+  border-radius: var(--radii-full);
+
+  &:last-child {
+    padding-block-end: var(--gutter-100);
+  }
+
+  &.done {
+    background-color: var(--gray-200);
+    color: var(--color-text-light);
+  }
+}
+
+.readingItemCheck {
+  display: flex;
+  align-items: center;
+  gap: var(--gutter-100);
+  padding: var(--gutter-100) var(--gutter);
+}
+
+.readingItemLink {
+  --size: 2.5rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  width: var(--size);
+  height: var(--size);
+  margin-right: var(--gutter-100);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radii-full);
+}
+
+.preview {
+  padding: var(--gutter);
+}
+
+.visuallyHidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }

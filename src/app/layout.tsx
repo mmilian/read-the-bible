@@ -1,13 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from 'next/font/google'
-import './globals.css'
+import "./globals.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config, library } from "@fortawesome/fontawesome-svg-core";
-import { faB, faCheckSquare, faCoffee, faDatabase, faHouseLaptop, faS, faWindowMaximize } from '@fortawesome/free-solid-svg-icons';
-library.add(faB, faS)
+import {
+  faB,
+  faCheckSquare,
+  faCoffee,
+  faDatabase,
+  faHouseLaptop,
+  faS,
+  faWindowMaximize,
+} from "@fortawesome/free-solid-svg-icons";
+library.add(faB, faS);
 config.autoAddCss = false;
-
-const inter = Inter({ subsets: ['latin'] })
 
 const APP_NAME = "Read the bible";
 const APP_DEFAULT_TITLE = "My Awesome Read the bible";
@@ -44,7 +49,7 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
@@ -61,7 +66,7 @@ export default function RootLayout({
             }
             `}</style>
       </head>
-      <body className={inter.className}>{children}</body>
+      <body>{children}</body>
     </html>
-  )
+  );
 }

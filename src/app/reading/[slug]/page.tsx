@@ -1,11 +1,10 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { ReadingDB, Verse, db } from "../../models/db";
 import { Chapter, extractBookChapters } from "../../models/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import Link from 'next/link';
-
+import Link from "next/link";
 
 type MapValuesToKeysIfAllowed<T> = {
   [K in keyof T]: T[K] extends PropertyKey ? K : never;
@@ -38,7 +37,13 @@ function verseRange(verses: number[]): [number, number] {
   return [verses[0], verses[verses.length - 1]];
 }
 
-async function fetchVerseRangeFromChapter(db: ReadingDB, bookName: string, chapter: number, verseFrom: number, verseTo: number) {
+async function fetchVerseRangeFromChapter(
+  db: ReadingDB,
+  bookName: string,
+  chapter: number,
+  verseFrom: number,
+  verseTo: number
+) {
   return db.verses
     .where(["bookAbbr", "chapter", "verse"])
     .between(
@@ -47,26 +52,32 @@ async function fetchVerseRangeFromChapter(db: ReadingDB, bookName: string, chapt
       true,
       true
     )
-    .toArray().then((verseArr) => sortByChapterAndVerse(verseArr));
-};
+    .toArray()
+    .then((verseArr) => sortByChapterAndVerse(verseArr));
+}
 
-
-async function fetchChapters(db: ReadingDB, bookName: string, chapterFrom: number, chapterTo: number) {
+async function fetchChapters(
+  db: ReadingDB,
+  bookName: string,
+  chapterFrom: number,
+  chapterTo: number
+) {
   return db.verses
     .where(["bookAbbr", "chapter"])
     .between([bookName, chapterFrom], [bookName, chapterTo], true, true)
-    .toArray().then((verseArr) => sortByChapterAndVerse(verseArr));
-};
+    .toArray()
+    .then((verseArr) => sortByChapterAndVerse(verseArr));
+}
 
 function isOneChapterWithVerses(chapters: Chapter[]) {
-  return (chapters.length === 1) && (chapters[0].verses.length === 2);
+  return chapters.length === 1 && chapters[0].verses.length === 2;
 }
 
-function isWholeChapter(book: { name: string; chapters: Chapter[]; }) {
-  return (book.chapters.length === 1) && (book.chapters[0].verses.length === 0);
+function isWholeChapter(book: { name: string; chapters: Chapter[] }) {
+  return book.chapters.length === 1 && book.chapters[0].verses.length === 0;
 }
 
-function areChapters(book: { name: string; chapters: Chapter[]; }) {
+function areChapters(book: { name: string; chapters: Chapter[] }) {
   return book.chapters.length === 2;
 }
 
@@ -76,26 +87,44 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   useEffect(() => {
     const book = extractBookChapters(params.slug);
-    console.log("Use efect book", book)
+    console.log("Use efect book", book);
     if (book === undefined) {
-      console.log("Book is undefined", book)
+      console.log("Book is undefined", book);
       return;
     }
     const fetchVerses = async () => {
       let chapterWithVerses: [string, Verse[]][] = [];
       if (isOneChapterWithVerses(book.chapters)) {
         const chapter = book.chapters[0];
-        chapterWithVerses = await fetchVerseRangeFromChapter(db, book.name, chapter.nr, chapter.verses[0], chapter.verses[1]);
+        chapterWithVerses = await fetchVerseRangeFromChapter(
+          db,
+          book.name,
+          chapter.nr,
+          chapter.verses[0],
+          chapter.verses[1]
+        );
       } else if (isWholeChapter(book)) {
-        chapterWithVerses = await fetchChapters(db, book.name, book.chapters[0].nr, book.chapters[0].nr);
+        chapterWithVerses = await fetchChapters(
+          db,
+          book.name,
+          book.chapters[0].nr,
+          book.chapters[0].nr
+        );
         setVerses(chapterWithVerses);
       } else if (areChapters(book)) {
-        chapterWithVerses = await fetchChapters(db, book.name, book.chapters[0].nr, book.chapters[1].nr);
+        chapterWithVerses = await fetchChapters(
+          db,
+          book.name,
+          book.chapters[0].nr,
+          book.chapters[1].nr
+        );
         setVerses(chapterWithVerses);
       } else
-        console.log("Not expected state. Should be one chapter with verses or whole chapter or chapters");
+        console.log(
+          "Not expected state. Should be one chapter with verses or whole chapter or chapters"
+        );
       setVerses(chapterWithVerses);
-    }
+    };
     fetchVerses();
   }, [params.slug]);
 
@@ -103,22 +132,26 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   return (
     <div>
-      <Link href={`/`} className="back-button">
-        <FontAwesomeIcon icon={faArrowLeft} />
-      </Link>
-      <h1>{decodeURIComponent(slug)}</h1>
-      {verses.map((chapterVerse, index) => (
-        <div className="text" key={index}>
-          <h2>{chapterVerse[0]}</h2>
-          {chapterVerse[1].map((verse, index) => (
-            <p key={index}>{verse.verse} {verse.text}</p>
+      <header className="header">
+        <h1>{decodeURIComponent(slug)}</h1>
+        <Link href={`/`} className="btn">
+          <FontAwesomeIcon icon={faArrowLeft} /> powrót
+        </Link>
+      </header>
+      <div className="preview">
+        <div className="card">
+          {verses.map((chapterVerse, index) => (
+            <div className="text" key={index}>
+              <h2>{chapterVerse[0]}</h2>
+              {chapterVerse[1].map((verse, index) => (
+                <p key={index}>
+                  {verse.verse} {verse.text}
+                </p>
+              ))}
+            </div>
           ))}
         </div>
-      ))}
+      </div>
     </div>
   );
-
-
-
-
 }
