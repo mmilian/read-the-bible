@@ -159,6 +159,12 @@ body {
   font-family: var(--font-family-primary);
 }
 
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gutter);
+}
+
 .header {
   position: sticky;
   top: 0;
@@ -189,8 +195,13 @@ body {
 .main {
   display: flex;
   flex-direction: column;
-  padding: var(--gutter);
   gap: var(--gutter);
+  padding-inline: var(--gutter);
+}
+
+.footer {
+  padding-inline: var(--gutter);
+  padding-block-end: var(--gutter);
 }
 
 h1,
