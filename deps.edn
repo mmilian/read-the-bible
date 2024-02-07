@@ -4,7 +4,8 @@
         babashka/fs {:mvn/version "0.3.17"}
         org.babashka/http-client {:mvn/version "0.3.11"}
         cheshire/cheshire {:mvn/version "5.11.0"}
-        io.github.matthewdowney/rich-comment-tests {:mvn/version "v1.0.3"}}
+        io.github.matthewdowney/rich-comment-tests {:mvn/version "v1.0.3"}
+        com.hyperfiddle/rcf {:mvn/version "20220926-202227"}}
  :aliases
  {:dev
   {:extra-deps { 

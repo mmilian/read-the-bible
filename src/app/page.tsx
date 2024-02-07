@@ -1,7 +1,7 @@
 "use client";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db, Path, ReadingItem, ReadingStep, resetDatabase } from "./models/db";
-import { PropsWithChildren, useState } from "react";
+import { db, Path, ReadingItem, ReadingProgress, ReadingStep, resetDatabase } from "./models/db";
+import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -20,6 +20,7 @@ function ResetDatabaseButton() {
 }
 
 function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
+
   const progressList = useLiveQuery(
     () => db.progress.where({ readingId: item.id }).toArray(),
     [item.id]
@@ -29,6 +30,7 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
     let progress = {
       readingId: item.id,
       completed: false,
+      stepId: item.stepId
     };
     db.progress.add(progress);
     progressList.push(progress);
@@ -51,7 +53,7 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
         <label htmlFor={progress.readingId}>{item.passages}</label>
       </div>
 
-      <Link href={`/reading/${item.passages}`} className="readingItemLink">
+      <Link href={`/reading/${item.passages}/${item.stepId}`} className="readingItemLink" prefetch={true}>
         <FontAwesomeIcon icon={faBookOpenReader} size="sm" />
         <span className="visuallyHidden">przeczytaj fragment</span>
       </Link>
@@ -59,10 +61,45 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
   );
 }
 
+
+function scrolTo(elementId: string) {
+  const element = document.getElementById(`step-${elementId}`);
+      // TODO: This is a hack. Should be replace by useLayoutEffect
+      setTimeout(() => {
+        element?.scrollIntoView(
+          {
+          behavior: "smooth",
+          block: "center",
+          inline: "center"
+        }
+        )
+    }, 100);
+}
+
 function StepView({
   step,
   path,
-}: PropsWithChildren<{ step: ReadingStep; path: string }>) {
+  maxProgres
+}: PropsWithChildren<{ step: ReadingStep; path: string; maxProgres: ReadingProgress | undefined }>) {
+  useEffect(() => {
+    // Access the URL hash
+    const hashStepId = window.location.hash.substring(1);
+    console.log("HashStep ",  hashStepId);
+    
+    if (hashStepId === String(step.id)) 
+    {
+      console.log("If HashStep ",  hashStepId);
+      scrolTo(hashStepId);
+    } else {
+      console.log("Not HashStep ",  hashStepId, "equal ",  String(step.id));
+    }
+    
+    if ((hashStepId.length == 0) && (maxProgres?.stepId !== undefined) && (maxProgres?.stepId === step.id)) {
+      console.log("If MaxProgres ",  maxProgres)
+      scrolTo(String(maxProgres.stepId));
+    }
+  }, [maxProgres, step] ); //
+
   const items = useLiveQuery(
     () => db.items.where({ stepId: step.id }).toArray(),
     [step.id]
@@ -70,7 +107,7 @@ function StepView({
   if (!items) return null;
 
   return (
-    <div className="card">
+    <div id={`step-${step.id}`} className="card">
       <h2 className="readingTitle">{step.title}</h2>
       <p className="readingDescription">{step.introduction}</p>
       <div className="readingList">
@@ -85,6 +122,11 @@ function StepView({
 }
 
 function Steps() {
+  const isCompleted = (progress: ReadingProgress) => progress.completed === true;
+  const progressList = useLiveQuery(() =>  db.progress.filter(isCompleted).limit(1).reverse().sortBy("stepId"));
+  
+  const maxProgres = (progressList !== undefined) ?  progressList[0] : undefined;
+  
   const [selectedPath, setSelectedPath] = useState<Path>(Path.Thread);
 
   const handlePathChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -101,6 +143,8 @@ function Steps() {
   };
   const steps = useLiveQuery(() => db.steps.toArray());
   if (!steps) return null;
+
+
 
   return (
     <>
@@ -139,7 +183,7 @@ function Steps() {
       </header>
       <main className="main">
         {steps.map((step) => (
-          <StepView key={step.id} step={step} path={selectedPath} />
+          <StepView key={step.id} step={step} path={selectedPath} maxProgres={maxProgres}/>
         ))}
       </main>
     </>
@@ -147,14 +191,16 @@ function Steps() {
 }
 
 export default function Home() {
+
   return (
     <div className="app">
       <Steps />
       <div className="footer">
-        <div className="card">
+        <div id="resetButton" className="card">
           <ResetDatabaseButton />
         </div>
       </div>
     </div>
   );
 }
+

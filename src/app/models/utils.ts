@@ -10,6 +10,13 @@ export type Chapter = {
   }
   
 
+
+  function replacePolishChars(input: string): string {
+    const polishChars: { [key: string]: string } = 
+    { 'ą': 'a', 'ć': 'c', 'ę': 'e', 'ł': 'l', 'ń': 'n', 'ó': 'o', 'ś': 's', 'ż': 'z', 'ź': 'z' };
+    return input.replace(/[ąćęłńóśżź]/g, match => polishChars[match]);
+  }
+  
   
   export function extractBookChapters(passage: string): Book | undefined {
     console.log("Decoded", decodeURIComponent(passage));
@@ -21,7 +28,7 @@ export type Chapter = {
   console.log("chapters", chapters);    
     if (versesStr === undefined) {
       return {
-        name: book.toLowerCase(),
+        name: replacePolishChars(book.toLowerCase()),
         chapters: chapters.map((chapter) => {
           return {
             nr: parseInt(chapter, 10),
@@ -32,7 +39,7 @@ export type Chapter = {
     } else {
       const verses = versesStr.split("-");
       return {
-        name: book.toLowerCase(),
+        name: replacePolishChars(book.toLowerCase()),
         chapters: [
           {
             nr: parseInt(chapters[0], 10),

@@ -5,6 +5,7 @@ import { Chapter, extractBookChapters } from "../../models/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import NextLink  from "next/link";
 
 type MapValuesToKeysIfAllowed<T> = {
   [K in keyof T]: T[K] extends PropertyKey ? K : never;
@@ -84,9 +85,10 @@ function areChapters(book: { name: string; chapters: Chapter[] }) {
 export default function Page({ params }: { params: { slug: string } }) {
   const [verses, setVerses] = useState<[string, Verse[]][]>([]);
   const slug = params.slug;
-
+  
   useEffect(() => {
-    const book = extractBookChapters(params.slug);
+    const book = extractBookChapters(slug[0]);
+    console.log("Slug: ", slug[1])
     console.log("Use efect book", book);
     if (book === undefined) {
       console.log("Book is undefined", book);
@@ -121,7 +123,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         setVerses(chapterWithVerses);
       } else
         console.log(
-          "Not expected state. Should be one chapter with verses or whole chapter or chapters"
+          "Not a expected state. Should be one chapter with verses or whole chapter or chapters"
         );
       setVerses(chapterWithVerses);
     };
@@ -133,10 +135,10 @@ export default function Page({ params }: { params: { slug: string } }) {
   return (
     <div>
       <header className="header">
-        <h1>{decodeURIComponent(slug)}</h1>
-        <Link href={`/`} className="btn">
+        <h1>{decodeURIComponent(slug[0])}</h1>
+        <NextLink href={`/#${slug[1]}`} className="btn" aria-label={slug[1]} scroll={true} title={slug[1]}>
           <FontAwesomeIcon icon={faArrowLeft} /> powrót
-        </Link>
+        </NextLink>
       </header>
       <div className="preview">
         <div className="card">
