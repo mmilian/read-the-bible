@@ -35,7 +35,8 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
         db.progress.add(progress);
       }
     });
-  if (progressList === undefined) return;
+  if (progressList === undefined) return; 
+  if (progressList.length === 0)  return;
   const progress = progressList[0]; 
   return (
     <div className={"readingItem " + (progress.completed ? "done" : "")}>
