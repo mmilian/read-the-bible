@@ -1,0 +1,74 @@
+/* Tokens */
+:root {
+  --color-primary-h: 6deg;
+  --color-primary-s: 93%;
+  --color-primary-l: 42%;
+  --color-primary: hsl(
+    var(--color-primary-h) var(--color-primary-s) var(--color-primary-l)
+  );
+
+  --color-white: #fff;
+
+  --gray-h: var(--color-primary-h);
+  --gray-s: 7%;
+  --gray-100: hsl(var(--gray-h) var(--gray-s) 95%);
+  --gray-200: hsl(var(--gray-h) var(--gray-s) 92%);
+  --gray-300: hsl(var(--gray-h) var(--gray-s) 90%);
+  --gray-400: hsl(var(--gray-h) var(--gray-s) 85%);
+  --gray-500: hsl(var(--gray-h) var(--gray-s) 75%);
+  --gray-600: hsl(var(--gray-h) var(--gray-s) 40%);
+  --gray-700: hsl(var(--gray-h) var(--gray-s) 25%);
+  --gray-800: hsl(var(--gray-h) var(--gray-s) 20%);
+  --gray-900: hsl(var(--gray-h) var(--gray-s) 10%);
+  --gray-1000: hsl(var(--gray-h) var(--gray-s) 0%);
+
+  --gutter: 1rem;
+  --gutter-100: calc(0.5 * var(--gutter));
+  --gutter-200: calc(0.75 * var(--gutter));
+  --gutter-300: calc(1.5 * var(--gutter));
+
+  --radii: 0.5rem;
+  --radii-100: 1rem;
+  --radii-full: 9999px;
+
+  --font-family-primary: system-ui, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+  --fs-50: 0.975rem;
+  --fs-200: 1rem;
+  --fs-300: 1.25rem;
+  --fs-400: 1.5rem;
+  --fs-500: 1.75rem;
+  --fs-600: clamp(1.5rem, 1.43vw + 1.09rem, 2.38rem);
+
+  --zindex-nav: 100;
+}
+
+/* Semantic Tokens */
+:root {
+  --color-text: var(--gray-900);
+  --color-text-light: var(--gray-600);
+  --color-text-contrast: var(--color-white);
+  --color-bg: var(--gray-100);
+  --color-bg-darker: var(--gray-200);
+  --color-surface-bg: var(--color-white);
+  --color-border: var(--gray-300);
+  --color-shadow: var(--gray-500);
+
+  --border-width: 1px;
+  --border: var(--border-width) solid var(--color-border);
+  --shadow: 0 0 15px color-mix(in srgb, var(--color-shadow) 70%, transparent);
+  --shadow-100: 0 3px 5px
+    color-mix(in srgb, var(--color-shadow) 20%, transparent);
+
+  @media (prefers-color-scheme: dark) {
+    --color-text: var(--gray-100);
+    --color-text-light: var(--gray-500);
+    --color-text-contrast: var(--color-white);
+    --color-bg: var(--gray-900);
+    --color-bg-darker: var(--gray-800);
+    --color-surface-bg: var(--gray-1000);
+    --color-border: var(--gray-600);
+    --color-shadow: var(--gray-1000);
+  }
+}
