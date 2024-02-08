@@ -1,9 +1,9 @@
 {
-  "name": "Serwist + Next",
-  "short_name": "SerwistNext",
+  "name": "Read the Bible",
+  "short_name": "ReadBible",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#FFFFFF",
+  "theme_color": "#cf1b07",
   "background_color": "#FFFFFF",
   "start_url": "/",
   "icons": [
