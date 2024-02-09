@@ -20,22 +20,24 @@ function ResetDatabaseButton() {
 }
 
 function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
-
   const progressList = useLiveQuery(
     () => db.progress.where({ readingId: item.id }).toArray(),
-    [item.id]
+    [item]
   );
-  if (!progressList) return null;
-  if (progressList.length === 0) {
-    let progress = {
-      readingId: item.id,
-      completed: false,
-      stepId: item.stepId
-    };
-    db.progress.add(progress);
-    progressList.push(progress);
-  }
-  const progress = progressList[0];
+  useEffect(
+    () => {
+      if (progressList?.length === 0) {
+        let progress = {
+          readingId: item.id,
+          completed: false,
+          stepId: item.stepId
+        };
+        db.progress.add(progress);
+      }
+    });
+  if (progressList === undefined) return; 
+  if (progressList.length === 0)  return;
+  const progress = progressList[0]; 
   return (
     <div className={"readingItem " + (progress.completed ? "done" : "")}>
       <div className="readingItemCheck">
@@ -64,16 +66,16 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
 
 function scrolTo(elementId: string) {
   const element = document.getElementById(`step-${elementId}`);
-      // TODO: This is a hack. Should be replace by useLayoutEffect
-      setTimeout(() => {
-        element?.scrollIntoView(
-          {
-          behavior: "smooth",
-          block: "center",
-          inline: "center"
-        }
-        )
-    }, 100);
+  // TODO: This is a hack. Should be replace by useLayoutEffect
+  setTimeout(() => {
+    element?.scrollIntoView(
+      {
+        behavior: "smooth",
+        block: "center",
+        inline: "center"
+      }
+    )
+  }, 100);
 }
 
 function StepView({
@@ -84,21 +86,20 @@ function StepView({
   useEffect(() => {
     // Access the URL hash
     const hashStepId = window.location.hash.substring(1);
-    console.log("HashStep ",  hashStepId);
-    
-    if (hashStepId === String(step.id)) 
-    {
-      console.log("If HashStep ",  hashStepId);
+    console.log("HashStep ", hashStepId);
+
+    if (hashStepId === String(step.id)) {
+      console.log("If HashStep ", hashStepId);
       scrolTo(hashStepId);
     } else {
-      console.log("Not HashStep ",  hashStepId, "equal ",  String(step.id));
+      console.log("Not HashStep ", hashStepId, "equal ", String(step.id));
     }
-    
+
     if ((hashStepId.length == 0) && (maxProgres?.stepId !== undefined) && (maxProgres?.stepId === step.id)) {
-      console.log("If MaxProgres ",  maxProgres)
+      console.log("If MaxProgres ", maxProgres)
       scrolTo(String(maxProgres.stepId));
     }
-  }, [maxProgres, step] ); //
+  }, [maxProgres, step]); //
 
   const items = useLiveQuery(
     () => db.items.where({ stepId: step.id }).toArray(),
@@ -121,31 +122,31 @@ function StepView({
   );
 }
 
+
+
 function Steps() {
-  const isCompleted = (progress: ReadingProgress) => progress.completed === true;
-  const progressList = useLiveQuery(() =>  db.progress.filter(isCompleted).limit(1).reverse().sortBy("stepId"));
-  
-  const maxProgres = (progressList !== undefined) ?  progressList[0] : undefined;
-  
+  const [progres, setProgres] = useState<ReadingProgress | undefined>();
+  useEffect(() => {
+    let ignore = false;
+    async function getProgres() {
+      const isCompleted = (progress: ReadingProgress) => progress.completed === true;
+      const progres = await db.progress.filter(isCompleted).limit(1).reverse().sortBy("stepId");
+      if (!ignore) {
+        setProgres((progres.length > 0) ? progres[0] : undefined);
+      }
+    }
+    getProgres();
+    return () => {
+      ignore = true;
+    }
+  }, []);
   const [selectedPath, setSelectedPath] = useState<Path>(Path.Thread);
 
   const handlePathChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedPath(event.target.value as Path);
-    // Add your logic here
-  };
-
-  const [path, setPath] = useState({ thread: true, spine: false });
-  const handlePathChange1 = () => {
-    setPath({ thread: !path.thread, spine: path.spine });
-  };
-  const handlePathChange2 = () => {
-    setPath({ thread: path.thread, spine: !path.spine });
   };
   const steps = useLiveQuery(() => db.steps.toArray());
   if (!steps) return null;
-
-
-
   return (
     <>
       <header className="header">
@@ -178,7 +179,7 @@ function Steps() {
       </header>
       <main className="main">
         {steps.map((step) => (
-          <StepView key={step.id} step={step} path={selectedPath} maxProgres={maxProgres}/>
+          <StepView key={step.id} step={step} path={selectedPath} maxProgres={progres} />
         ))}
       </main>
     </>
