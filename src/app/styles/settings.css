@@ -9,8 +9,8 @@
 
   --color-white: #fff;
 
-  --gray-h: var(--color-primary-h);
-  --gray-s: 7%;
+  --gray-h: calc(var(--color-primary-h) / 3);
+  --gray-s: 2%;
   --gray-100: hsl(var(--gray-h) var(--gray-s) 95%);
   --gray-200: hsl(var(--gray-h) var(--gray-s) 92%);
   --gray-300: hsl(var(--gray-h) var(--gray-s) 90%);
@@ -18,9 +18,9 @@
   --gray-500: hsl(var(--gray-h) var(--gray-s) 75%);
   --gray-600: hsl(var(--gray-h) var(--gray-s) 40%);
   --gray-700: hsl(var(--gray-h) var(--gray-s) 25%);
-  --gray-800: hsl(var(--gray-h) var(--gray-s) 20%);
-  --gray-900: hsl(var(--gray-h) var(--gray-s) 10%);
-  --gray-1000: hsl(var(--gray-h) var(--gray-s) 0%);
+  --gray-800: hsl(var(--gray-h) var(--gray-s) 15%);
+  --gray-900: hsl(var(--gray-h) var(--gray-s) 5%);
+  --gray-1000: hsl(var(--gray-h) var(--gray-s) 2%);
 
   --gutter: 1rem;
   --gutter-100: calc(0.5 * var(--gutter));
@@ -35,7 +35,7 @@
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 
   --fs-50: 0.975rem;
-  --fs-200: 1rem;
+  --fs-200: 1.125rem;
   --fs-300: 1.25rem;
   --fs-400: 1.5rem;
   --fs-500: 1.75rem;
@@ -65,10 +65,11 @@
     --color-text: var(--gray-100);
     --color-text-light: var(--gray-500);
     --color-text-contrast: var(--color-white);
-    --color-bg: var(--gray-900);
-    --color-bg-darker: var(--gray-800);
-    --color-surface-bg: var(--gray-1000);
+    --color-bg: var(--gray-800);
+    --color-bg-darker: var(--gray-700);
+    --color-surface-bg: var(--gray-800);
     --color-border: var(--gray-600);
     --color-shadow: var(--gray-1000);
+    --shadow-100: 0 0 1px var(--gray-500);
   }
 }

@@ -131,15 +131,7 @@ h3 {
 
 .readingTitle {
   margin-top: var(--gutter-300);
-  background-image: linear-gradient(
-    to left,
-    var(--color-text-light),
-    var(--color-text)
-  );
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  text-shadow: var(--shadow-100);
+  color: var(--color-text);
 }
 
 .readingDescription {
