@@ -19,6 +19,8 @@
   --gray-600: hsl(var(--gray-h) var(--gray-s) 40%);
   --gray-700: hsl(var(--gray-h) var(--gray-s) 25%);
   --gray-800: hsl(var(--gray-h) var(--gray-s) 15%);
+  --gray-850: hsl(var(--gray-h) var(--gray-s) 10%);
+  --gray-875: hsl(var(--gray-h) var(--gray-s) 7%);
   --gray-900: hsl(var(--gray-h) var(--gray-s) 5%);
   --gray-1000: hsl(var(--gray-h) var(--gray-s) 2%);
 
@@ -37,8 +39,7 @@
   --fs-200: 1.25rem;
   --fs-300: 1.375rem;
   --fs-400: 1.5rem;
-  --fs-500: 2rem;
-  --fs-600: clamp(1.5rem, 1.43vw + 1.09rem, 2.38rem);
+  --fs-500: 1.75rem;
 
   --zindex-nav: 100;
 }
@@ -48,11 +49,7 @@
     --color-text: var(--gray-700);
     --color-text-light: var(--gray-1000);
     --color-text-contrast: var(--color-white);
-    --color-bg: radial-gradient(
-      circle,
-      var(--gray-100) 10%,
-      var(--gray-300) 90%
-    );
+    --color-bg: var(--gray-300);
     --color-bg-darker: var(--gray-200);
     --color-surface-bg: var(--color-white);
     --color-border: var(--gray-300);
@@ -66,16 +63,12 @@
     --color-text: var(--gray-500);
     --color-text-light: var(--gray-100);
     --color-text-contrast: var(--color-white);
-    --color-bg: radial-gradient(
-      ellipse,
-      var(--gray-800) 0%,
-      var(--gray-900) 120%
-    );
+    --color-bg: var(--gray-875);
     --color-bg-darker: var(--gray-700);
-    --color-surface-bg: var(--gray-800);
+    --color-surface-bg: var(--gray-850);
     --color-border: var(--gray-600);
     --color-shadow: var(--gray-1000);
-    --shadow-100: 0 0 1px var(--gray-500);
+    --shadow-100: 0 0 1px var(--gray-800);
   }
 }
 
@@ -84,6 +77,6 @@
   --border-width: 1px;
   --border: var(--border-width) solid var(--color-border);
   --shadow: 0 0 15px color-mix(in srgb, var(--color-shadow) 50%, transparent);
-  --shadow-100: 0 3px 5px
-    color-mix(in srgb, var(--color-shadow) 20%, transparent);
+  /* --shadow-100: 0 3px 5px
+    color-mix(in srgb, var(--color-shadow) 30%, transparent); */
 }
