@@ -61,6 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="theme-color" content="#cf1b07" />
         <style>{`
             html, body, #__next {
               height: 100%;
