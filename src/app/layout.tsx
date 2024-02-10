@@ -11,6 +11,13 @@ import {
   faS,
   faWindowMaximize,
 } from "@fortawesome/free-solid-svg-icons";
+import { IBM_Plex_Serif } from "next/font/google";
+
+const ibmPlexSerif = IBM_Plex_Serif({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+});
+
 library.add(faB, faS);
 config.autoAddCss = false;
 
@@ -54,7 +61,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="theme-color" content="#cf1b07" />
         <style>{`
             html, body, #__next {
               height: 100%;
@@ -67,7 +73,7 @@ export default function RootLayout({
             }
             `}</style>
       </head>
-      <body>{children}</body>
+      <body className={ibmPlexSerif.className}>{children}</body>
     </html>
   );
 }

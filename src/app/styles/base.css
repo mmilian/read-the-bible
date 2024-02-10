@@ -2,7 +2,9 @@ body {
   margin: 0;
   color: var(--color-text);
   font-size: var(--fs-200);
-  background-color: var(--color-bg);
+  background: var(--color-bg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   font-family: var(--font-family-primary);
   line-height: 1.5;
 }
@@ -44,7 +46,7 @@ body {
 }
 
 .logoName {
-  fill: var(--color-text);
+  fill: var(--color-text-light);
 }
 
 .main {
@@ -63,9 +65,13 @@ h1,
 h2,
 h3 {
   margin: 0;
-  font-weight: bold;
+  font-weight: 700;
   text-wrap: balance;
   max-width: 60ch;
+  color: var(--color-text-light);
+}
+
+h1 {
   font-size: var(--fs-600);
 }
 
@@ -115,7 +121,7 @@ h3 {
   padding: var(--gutter-100) var(--gutter);
   background-color: var(--color-primary);
   color: var(--color-text-contrast);
-  border: var(--border);
+  border: 0;
   border-radius: var(--radii);
   transition: background-color var(--g-transition), color var(--g-transition);
   user-select: none;
@@ -131,11 +137,6 @@ h3 {
 
 .readingTitle {
   margin-top: var(--gutter-300);
-  color: var(--color-text);
-}
-
-.readingDescription {
-  color: var(--color-text-light);
 }
 
 .readingList {
@@ -152,8 +153,10 @@ h3 {
   padding-block: var(--gutter-100);
   transition-duration: background-color 100ms;
   font-size: var(--fs-300);
+  font-weight: 700;
   border: var(--border);
   border-radius: var(--radii-full);
+  color: var(--color-text-light);
 
   &:last-child {
     padding-block-end: var(--gutter-100);
@@ -161,7 +164,7 @@ h3 {
 
   &.done {
     background-color: var(--color-bg-darker);
-    color: var(--color-text-light);
+    color: var(--color-text);
   }
 }
 
