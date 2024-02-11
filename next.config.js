@@ -7,6 +7,10 @@ const withSerwist = require("@serwist/next").default({
 });
 
 
+// module.exports = {
+//     // Your Next.js config
+// };
+
 module.exports = withSerwist({
     // Your Next.js config
 });

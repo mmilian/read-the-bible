@@ -9,7 +9,7 @@ export enum Path {
 export interface ReadingItem {
   id: string;
   stepId: number;
-  path: string;
+  path: Path;
   passages: string;
 }
 
@@ -54,11 +54,15 @@ export const db = new ReadingDB();
 
 db.on("populate", populate);
 
-export function resetDatabase() {
-  return db.transaction("rw",db.progress, db.items, db.steps, db.verses, async () => {
-    await Promise.all([db.progress.clear]);
-    await Promise.all([db.verses.clear()]);
-    await Promise.all([db.items.clear(), db.steps.clear()]);
-    await populate();
-  });
+export async function resetDatabase() {
+  db.delete()
+    .then(() => {
+      console.log("Database successfully deleted");
+    })
+    .catch((err) => {
+      console.error("Could not delete database: ", err);
+    })
+    .finally(() => {
+      window.location.reload();
+    });
 }

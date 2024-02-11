@@ -5,61 +5,21 @@ import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { groupBy } from "./funcUtils";
 
-function ResetDatabaseButton() {
-  return (
-    <button
-      className="btn"
-      onClick={() => {
-        resetDatabase();
-      }}
-    >
-      Reset database
-    </button>
-  );
+type ItemView = {
+  readingId: string,
+  completed: boolean,
+  stepId: number,
+  path: Path,
+  passages: string,
 }
 
-function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
-  const progressList = useLiveQuery(
-    () => db.progress.where({ readingId: item.id }).toArray(),
-    [item]
-  );
-  useEffect(
-    () => {
-      if (progressList?.length === 0) {
-        let progress = {
-          readingId: item.id,
-          completed: false,
-          stepId: item.stepId
-        };
-        db.progress.add(progress);
-      }
-    });
-  if ((progressList === undefined) || (progressList.length === 0)) return; 
-  const progress = progressList[0]; 
-  return (
-    <div className={"readingItem " + (progress.completed ? "done" : "")}>
-      <div className="readingItemCheck">
-        <input
-          id={progress.readingId}
-          type="checkbox"
-          checked={!!progress.completed}
-          onChange={(ev) =>
-            db.progress.update(progress, {
-              completed: ev.target.checked,
-            })
-          }
-          className="form-control"
-        />
-        <label htmlFor={progress.readingId}>{item.passages}</label>
-      </div>
-
-      <Link href={`/reading/${item.passages}/${item.stepId}`} className="readingItemLink" prefetch={true}>
-        <FontAwesomeIcon icon={faBookOpenReader} size="sm" />
-        <span className="visuallyHidden">przeczytaj fragment</span>
-      </Link>
-    </div>
-  );
+type StepView = {
+  id: number,
+  title: string,
+  introduction: string,
+  items: ItemView[],
 }
 
 
@@ -67,6 +27,7 @@ function scrolTo(elementId: string) {
   const element = document.getElementById(`step-${elementId}`);
   // TODO: This is a hack. Should be replace by useLayoutEffect
   setTimeout(() => {
+    console.log("Scrolling to ", elementId, "element ", element);
     element?.scrollIntoView(
       {
         behavior: "instant",
@@ -77,44 +38,92 @@ function scrolTo(elementId: string) {
   }, 100);
 }
 
+
+function buildReadingView(stepList: ReadingStep[], itemList: ReadingItem[], progressList: ReadingProgress[]) {
+  const idexedSteps = groupBy(stepList, "id");
+  const indexedItems = groupBy(itemList, "id");
+  const idexedProgres = groupBy(progressList, "stepId");
+  console.log("IndexedProgres", idexedProgres)
+  const stepsView: StepView[] = [];
+  for (const stepId in idexedProgres) {
+    let readingsInStep = idexedProgres[stepId];
+    let readingItems: ItemView[] = [];
+    for (const reading of readingsInStep) {
+      readingItems.push({
+        ...reading,
+        passages: indexedItems[reading.readingId][0].passages,
+        path: indexedItems[reading.readingId][0].path,
+      });
+    }
+    stepsView.push({ items: readingItems, id: stepId as unknown as number, title: idexedSteps[stepId][0].title, introduction: idexedSteps[stepId][0].introduction });
+  }
+  return stepsView;
+}
+
+
+function ResetDatabaseButton() {
+  return (
+    <button
+      className="btn"
+      onClick={() => {
+        resetDatabase();
+      }}
+    >
+      Reset All
+    </button>
+  );
+}
+
+function ReadingItemView({ item }: PropsWithChildren<{ item: ItemView }>) {
+
+  return (
+    <div className={"readingItem " + (item.completed ? "done" : "")}>
+      <div className="readingItemCheck">
+        <input
+          id={item.readingId}
+          type="checkbox"
+          checked={!!item.completed}
+          onChange={(ev) => {
+            window.location.hash = String(item.stepId);
+            db.progress.update({ ...item }, {
+              completed: ev.target.checked,
+            })
+          }
+          }
+          className="form-control"
+        />
+        <label htmlFor={item.readingId}>{item.passages}</label>
+      </div>
+
+      <Link href={`/reading/${item.passages}/${item.stepId}`} className="readingItemLink" prefetch={true}>
+        <FontAwesomeIcon icon={faBookOpenReader} size="sm" />
+        <span className="visuallyHidden">przeczytaj fragment</span>
+      </Link>
+    </div>
+  );
+}
+
 function ReadingStep({
   step,
   path,
-  maxProgres
-}: PropsWithChildren<{ step: ReadingStep; path: string; maxProgres: ReadingProgress | undefined }>) {
+  maxProgres,
+}: PropsWithChildren<{ step: StepView; path: string; maxProgres: string }>) {
   useEffect(() => {
-    // Access the URL hash
-    const hashStepId = window.location.hash.substring(1);
-    console.log("HashStep ", hashStepId);
-
-    if (hashStepId === String(step.id)) {
-      console.log("If HashStep ", hashStepId);
-      scrolTo(hashStepId);
-    } else {
-      console.log("Not HashStep ", hashStepId, "equal ", String(step.id));
-    }
-
-    if ((hashStepId.length == 0) && (maxProgres?.stepId !== undefined) && (maxProgres?.stepId === step.id)) {
+    if ((maxProgres !== undefined) && (maxProgres == String(step.id))) {
       console.log("If MaxProgres ", maxProgres)
-      scrolTo(String(maxProgres.stepId));
+      scrolTo(String(maxProgres));
     }
   }, [maxProgres, step]); //
-
-  const items = useLiveQuery(
-    () => db.items.where({ stepId: step.id }).toArray(),
-    [step.id]
-  );
-  if (!items) return null;
 
   return (
     <div id={`step-${step.id}`} className="card">
       <h2 className="readingTitle">{step.title}</h2>
       <p className="readingDescription">{step.introduction}</p>
       <div className="readingList">
-        {items
+        {step.items
           .filter((el) => el.path === path)
           .map((item) => (
-            <ReadingItemView key={item.id} item={item} />
+            <ReadingItemView key={item.readingId} item={item} />
           ))}
       </div>
     </div>
@@ -124,28 +133,33 @@ function ReadingStep({
 
 
 function ReadingSteps() {
-  const [progres, setProgres] = useState<ReadingProgress | undefined>();
-  useEffect(() => {
-    let ignore = false;
-    async function getProgres() {
-      const isCompleted = (progress: ReadingProgress) => progress.completed === true;
-      const progres = await db.progress.filter(isCompleted).limit(1).reverse().sortBy("stepId");
-      if (!ignore) {
-        setProgres((progres.length > 0) ? progres[0] : undefined);
+
+  const readingProgress = useLiveQuery(() => db.progress.orderBy("id").toArray());
+  const [selectedPath, setSelectedPath] = useState<Path>(Path.Thread);
+  const stepList = useLiveQuery(() => db.steps.toArray());
+  const itemList = useLiveQuery(() => db.items.toArray());
+
+  if (!readingProgress || (readingProgress.length == 0)) return null;
+  if (!stepList || (stepList.length == 0)) return null;
+  if (!itemList || (itemList.length) == 0) return null;
+
+  const maxProgress = readingProgress.reduce((prev, current) => {
+    if (current.completed) {
+      if (prev.stepId > current.stepId) {
+        return prev  
+      } else  {
+        console.log("MaxProgress", current)
+        return  current;
       }
     }
-    getProgres();
-    return () => {
-      ignore = true;
-    }
-  }, []);
-  const [selectedPath, setSelectedPath] = useState<Path>(Path.Thread);
-
+    return prev
+  });
+  const hashStepId = window.location.hash.substring(1);
+  const readingView = buildReadingView(stepList, itemList, readingProgress);
   const handlePathChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedPath(event.target.value as Path);
   };
-  const steps = useLiveQuery(() => db.steps.toArray());
-  if (!steps) return null;
+
   return (
     <>
       <header className="header">
@@ -177,13 +191,14 @@ function ReadingSteps() {
         </select>
       </header>
       <main className="main">
-        {steps.map((step) => (
-          <ReadingStep key={step.id} step={step} path={selectedPath} maxProgres={progres} />
+        {readingView.map((step) => (
+          <ReadingStep key={step.id} step={step} path={selectedPath} maxProgres={hashStepId ? hashStepId : String(maxProgress.stepId)} />
         ))}
       </main>
     </>
   );
 }
+
 
 export default function Home() {
 

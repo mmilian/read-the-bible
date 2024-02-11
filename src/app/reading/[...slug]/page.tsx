@@ -4,32 +4,13 @@ import { ReadingDB, Verse, db } from "../../models/db";
 import { Chapter, extractBookChapters } from "../../models/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
 import NextLink  from "next/link";
+import { groupBy } from "@/app/funcUtils";
 
-type MapValuesToKeysIfAllowed<T> = {
-  [K in keyof T]: T[K] extends PropertyKey ? K : never;
-};
-
-type Filter<T> = MapValuesToKeysIfAllowed<T>[keyof T];
-
-function groupBy<T extends Record<PropertyKey, any>, Key extends Filter<T>>(
-  arr: T[],
-  key: Key
-): Record<T[Key], T[]> {
-  return arr.reduce((accumulator, val) => {
-    const groupedKey = val[key];
-    if (!accumulator[groupedKey]) {
-      accumulator[groupedKey] = [];
-    }
-    accumulator[groupedKey].push(val);
-    return accumulator;
-  }, {} as Record<T[Key], T[]>);
-}
 
 const sortByChapterAndVerse = (verseArr: Verse[]) => {
-  const sortedVerseArr = groupBy(verseArr, "chapter");
-  return Object.entries(sortedVerseArr).sort(
+  const verses = groupBy(verseArr, "chapter");
+  return Object.entries(verses).sort(
     ([keyA], [keyB]) => parseInt(keyA) - parseInt(keyB)
   );
 };
