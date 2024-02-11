@@ -35,8 +35,7 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingItem }>) {
         db.progress.add(progress);
       }
     });
-  if (progressList === undefined) return; 
-  if (progressList.length === 0)  return;
+  if ((progressList === undefined) || (progressList.length === 0)) return; 
   const progress = progressList[0]; 
   return (
     <div className={"readingItem " + (progress.completed ? "done" : "")}>
@@ -70,7 +69,7 @@ function scrolTo(elementId: string) {
   setTimeout(() => {
     element?.scrollIntoView(
       {
-        behavior: "smooth",
+        behavior: "instant",
         block: "center",
         inline: "center"
       }
@@ -78,7 +77,7 @@ function scrolTo(elementId: string) {
   }, 100);
 }
 
-function StepView({
+function ReadingStep({
   step,
   path,
   maxProgres
@@ -124,7 +123,7 @@ function StepView({
 
 
 
-function Steps() {
+function ReadingSteps() {
   const [progres, setProgres] = useState<ReadingProgress | undefined>();
   useEffect(() => {
     let ignore = false;
@@ -179,7 +178,7 @@ function Steps() {
       </header>
       <main className="main">
         {steps.map((step) => (
-          <StepView key={step.id} step={step} path={selectedPath} maxProgres={progres} />
+          <ReadingStep key={step.id} step={step} path={selectedPath} maxProgres={progres} />
         ))}
       </main>
     </>
@@ -190,7 +189,7 @@ export default function Home() {
 
   return (
     <div className="app">
-      <Steps />
+      <ReadingSteps />
       <div className="footer">
         <div id="resetButton" className="card">
           <ResetDatabaseButton />
