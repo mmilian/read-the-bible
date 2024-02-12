@@ -9,7 +9,7 @@ export enum Path {
 export interface ReadingItem {
   id: string;
   stepId: number;
-  path: Path;
+  path: string;
   passages: string;
 }
 

@@ -98,7 +98,7 @@ h3 {
 }
 
 .form-select {
-  display: block;
+  display: inline;
   accent-color: var(--color-primary);
   border: var(--border);
   border-radius: var(--radii);

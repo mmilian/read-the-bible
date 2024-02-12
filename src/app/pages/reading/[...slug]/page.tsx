@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ReadingDB, Verse, db } from "../../models/db";
-import { Chapter, extractBookChapters } from "../../models/utils";
+import { ReadingDB, Verse, db } from "../../../models/db";
+import { Chapter, extractBookChapters } from "../../../models/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import NextLink  from "next/link";
