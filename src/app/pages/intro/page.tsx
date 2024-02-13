@@ -13,21 +13,22 @@ const Intro: React.FC = () => (
       </NextLink>
     </header>
     <div className="card">
-      <h1>Jak czytać Biblę </h1>
+      <h1>Jak czytać Biblię </h1>
 
       <p>
-        Wędrując w górach trzymaj się szlaku
-        i przewodnika. Masz wtedy bezpieczeństwo,
+        Wędrując w górach trzymasz się szlaku
+        i przewodnika, co daje Ci bezpieczeństwo,
         najładniejsze widoki i pewność dotarcia do
         celu.</p>
       <p>Gdy wędrujesz przez Biblię też powinieneś
-        mieć wytyczony szlak i przewodnika. Ta mała
-        aplikacja stowrzona na bazie książki <Link href="https://fundacjanaszawinnica.pl/pl/p/Jak-czytac-i-rozumiec-Pismo-Swiete-Ilona-Krawczyk-Krajczynska/41"> Jak czytać i rozumieć Pismo Święte</Link> autorstwa Ilony Krawczyk - Krajczyńskiej, wydanej przez 
-        <Link href="https://fundacjanaszawinnica.pl/pl/p/Jak-czytac-i-rozumiec-Pismo-Swiete-Ilona-Krawczyk-Krajczynska/41"> Fundacje Nasza Winnica </Link>,  będzie wytyczać ci tropy i prowadzić za rękę w czasie lektury. 
+        mieć wytyczony szlak i przewodnika. 
         Nie czytaj Biblii od początku do końca, od deski
         do deski. Przynajmniej nie od razu. Musisz
-        mieć pewną strategię, którą daje ta
-        książeczka.</p>
+        mieć pewną strategię.
+        Ta mała aplikacja została stworzona na bazie książki <Link href="https://fundacjanaszawinnica.pl/pl/p/Jak-czytac-i-rozumiec-Pismo-Swiete-Ilona-Krawczyk-Krajczynska/41"> Jak czytać i rozumieć Pismo Święte</Link> autorstwa Ilony Krawczyk - Krajczyńskiej, wydanej przez 
+        <Link href="https://fundacjanaszawinnica.pl/pl/p/Jak-czytac-i-rozumiec-Pismo-Swiete-Ilona-Krawczyk-Krajczynska/41"> Fundacje Nasza Winnica </Link>,  będzie wytyczać ci tropy i prowadzić za rękę w czasie lektury. 
+        
+        Książeczka proponuje właśnie strategię czytania Biblii.</p>
       <br></br>
       <p>
         Ta strategia zawiera się w dwóch punktach:
@@ -42,7 +43,7 @@ const Intro: React.FC = () => (
           tylko pierwszy rzut oka. W ten sposób
           zdobędziesz nić przewodnią - zarys całości.
           Poznasz scenografię i głównych aktorów.
-          Z każdego rozdziału znajduj i czytaj tylko
+          Z każdego rozdziału czytaj 
           fragmenty dotyczące nici przewodniej.
           </p>
           </li>
@@ -57,7 +58,7 @@ const Intro: React.FC = () => (
           przypomniany i uzupełniony kolejnymi
           szczegółami.
           Wróć do każdego rozdziału - tym razem
-          znajduj i czytaj tylko fragmenty dotyczące
+           czytaj fragmenty dotyczące
           kręgosłupa. </p>
         </li>
       </ol>
@@ -68,7 +69,7 @@ const Intro: React.FC = () => (
         Zadaniem aplikacji jest pomóc Ci w wędrówce przez Pismo Święte.
         Po przeczytaniu każdego fragmentu, odznacz go w aplikacji.
         W ten sposób będziesz mógł śledzić swoje postępy.
-        Jak skończysz czytać &#34;Nić przewodnią&#34; przełącz za pomocą przycisku widok na &#34;Kręgosłup&#34;.
+        Jak skończysz czytać &#34;Nić przewodnią&#34; przełącz się za pomocą przycisku widok na &#34;Kręgosłup&#34;.
       </p>
     </div>
     <div className="card">
