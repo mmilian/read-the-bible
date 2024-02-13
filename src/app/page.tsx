@@ -82,7 +82,7 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingProgress }>)
     <div className={"readingItem " + (item.completed ? "done" : "")}>
       <div className="readingItemCheck">
         <input
-          id={item.id}
+          id={String(item.id)}
           type="checkbox"
           checked={!!item.completed}
           onChange={(ev) => {
@@ -94,7 +94,7 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingProgress }>)
           }
           className="form-control"
         />
-        <label htmlFor={item.id}>{item.passages}</label>
+        <label htmlFor={String(item.id)}>{item.passages}</label>
       </div>
 
       <Link href={`/pages/reading/${item.passages}/${item.stepId}`} className="readingItemLink" prefetch={true}>
