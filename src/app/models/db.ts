@@ -6,12 +6,12 @@ export enum Path {
   Spine = "Kręgosłup",
 }
 
-export interface ReadingItem {
-  id: string;
-  stepId: number;
-  path: string;
-  passages: string;
-}
+// export interface ReadingItem {
+//   id: string;
+//   stepId: number;
+//   path: string;
+//   passages: string;
+// }
 
 export interface ReadingStep {
   id: number;
@@ -20,9 +20,11 @@ export interface ReadingStep {
 }
 
 export interface ReadingProgress {
-  readingId: string;
-  completed: boolean;
+  id: number;
   stepId: number;
+  path: string;
+  completed: boolean;
+  passages: string;
 }
 
 export interface Verse {
@@ -35,7 +37,6 @@ export interface Verse {
 
 export class ReadingDB extends Dexie {
   steps!: Table<ReadingStep, string>;
-  items!: Table<ReadingItem, string>;
   verses!: Table<Verse, string>;
   progress!: Table<ReadingProgress, number>;
 
@@ -43,7 +44,6 @@ export class ReadingDB extends Dexie {
     super("ReadingDB");
     this.version(3).stores({
       steps: "id",
-      items: "id, path, stepId",
       progress: "++id, readingId",
       verses: "[bookAbbr+chapter+verse]",
     });

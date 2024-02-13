@@ -604,10 +604,11 @@
    :introduction intro})
 
 (defn- reading-task [step-id path-type counter passage]
-  {:id (str (swap! counter inc) "-" step-id )
+  {:id (swap! counter inc)
    :stepId step-id
    :path path-type
-   :passages passage})
+   :passages passage
+   :completed false})
 
 (defn- create-reading-tasks [step-id passages path-type counter]
   (let [mapper (partial reading-task step-id path-type counter)]
@@ -639,7 +640,7 @@
 
 (defn- parse-book [raw]
   (let [steps (mapv create-step raw)
-        counter (atom 1)
+        counter (atom 0)
         items (mapcat (fn [[id _ _ {:keys [thread spine]}]]
                         (let [step-id id]
                           (concat (create-reading-tasks step-id thread "Nić przewodnia" counter)
@@ -666,22 +667,26 @@
     :title "Abraham",
     :introduction "Historia biblijna zaczyna się od Abrahama..."}]
   :items
-  [{:id "2-1",
+  [{:id 1,
     :stepId 1,
     :path "Nić przewodnia",
-    :passages "Rdz 12-13"}
-   {:id "3-1",
+    :passages "Rdz 12-13"
+    :completed false}
+   {:id 2,
     :stepId 1,
     :path "Nić przewodnia",
-    :passages "Rdz 21, 1-8"}
-   {:id "4-1",
+    :passages "Rdz 21, 1-8"
+    :completed false}
+   {:id 3,
     :stepId 1,
     :path "Kręgosłup",
-    :passages "Rdz 12-14"}
-   {:id "5-1",
+    :passages "Rdz 12-14"
+    :completed false}
+   {:id 4,
     :stepId 1,
     :path "Kręgosłup",
-    :passages "Rdz 21-22"}]})
+    :passages "Rdz 21-22"
+    :completed false}]})
 
 
 (comment

@@ -1,6 +1,6 @@
 "use client";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db, Path, ReadingItem, ReadingProgress, ReadingStep, resetDatabase } from "./models/db";
+import { db, Path, ReadingProgress, ReadingStep, resetDatabase } from "./models/db";
 import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
@@ -24,7 +24,7 @@ type StepView = {
   id: number,
   title: string,
   introduction: string,
-  items: ItemView[],
+  items: ReadingProgress[],
 }
 
 
@@ -44,20 +44,17 @@ function scrolTo(elementId: string) {
 }
 
 
-function buildReadingView(stepList: ReadingStep[], itemList: ReadingItem[], progressList: ReadingProgress[]) {
+function buildReadingView(stepList: ReadingStep[], progressList: ReadingProgress[]) {
   const idexedSteps = groupBy(stepList, "id");
-  const indexedItems = groupBy(itemList, "id");
   const idexedProgres = groupBy(progressList, "stepId");
   console.log("IndexedProgres", idexedProgres)
   const stepsView: StepView[] = [];
   for (const stepId in idexedProgres) {
     let readingsInStep = idexedProgres[stepId];
-    let readingItems: ItemView[] = [];
+    let readingItems: ReadingProgress[] = [];
     for (const reading of readingsInStep) {
       readingItems.push({
-        ...reading,
-        passages: indexedItems[reading.readingId][0].passages,
-        path: indexedItems[reading.readingId][0].path,
+        ...reading
       });
     }
     stepsView.push({ items: readingItems, id: stepId as unknown as number, title: idexedSteps[stepId][0].title, introduction: idexedSteps[stepId][0].introduction });
@@ -79,13 +76,13 @@ function ResetDatabaseButton() {
   );
 }
 
-function ReadingItemView({ item }: PropsWithChildren<{ item: ItemView }>) {
+function ReadingItemView({ item }: PropsWithChildren<{ item: ReadingProgress }>) {
 
   return (
     <div className={"readingItem " + (item.completed ? "done" : "")}>
       <div className="readingItemCheck">
         <input
-          id={item.readingId}
+          id={item.id}
           type="checkbox"
           checked={!!item.completed}
           onChange={(ev) => {
@@ -97,7 +94,7 @@ function ReadingItemView({ item }: PropsWithChildren<{ item: ItemView }>) {
           }
           className="form-control"
         />
-        <label htmlFor={item.readingId}>{item.passages}</label>
+        <label htmlFor={item.id}>{item.passages}</label>
       </div>
 
       <Link href={`/pages/reading/${item.passages}/${item.stepId}`} className="readingItemLink" prefetch={true}>
@@ -128,7 +125,7 @@ function ReadingStep({
         {step.items
           .filter((el) => el.path === path)
           .map((item) => (
-            <ReadingItemView key={item.readingId} item={item} />
+            <ReadingItemView key={item.id} item={item} />
           ))}
       </div>
     </div>
@@ -137,31 +134,30 @@ function ReadingStep({
 
 
 
-function ReadingSteps({appState, setAppState}: PropsWithChildren<{appState: AppState, setAppState: (appState: AppState) => void}>) {
+function ReadingSteps({ appState, setAppState }: PropsWithChildren<{ appState: AppState, setAppState: (appState: AppState) => void }>) {
   const readingProgress = useLiveQuery(() => db.progress.orderBy("id").toArray());
   const [selectedPath, setSelectedPath] = useState<string>(appState?.selectedPath);
   const stepList = useLiveQuery(() => db.steps.toArray());
-  const itemList = useLiveQuery(() => db.items.toArray());
 
   if (!readingProgress || (readingProgress.length == 0)) return null;
   if (!stepList || (stepList.length == 0)) return null;
-  if (!itemList || (itemList.length) == 0) return null;
 
   const maxProgress = readingProgress.reduce((prev, current) => {
     if (current.completed) {
       if (prev.stepId > current.stepId) {
-        return prev  
-      } else  {
+        return prev
+      } else {
         console.log("MaxProgress", current)
-        return  current;
+        return current;
       }
     }
     return prev
   });
+  console.log("MaxProgress is ", maxProgress);
   const hashStepId = window.location.hash.substring(1);
-  const readingView = buildReadingView(stepList, itemList, readingProgress);
-  
-  
+  const readingView = buildReadingView(stepList, readingProgress);
+
+
   const handlePathChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setAppState
     setSelectedPath(event.target.value as Path);
@@ -170,7 +166,7 @@ function ReadingSteps({appState, setAppState}: PropsWithChildren<{appState: AppS
   return (
     <>
       <header className="header">
-      <h1 className="logo">
+        <h1 className="logo">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="70"
@@ -196,7 +192,7 @@ function ReadingSteps({appState, setAppState}: PropsWithChildren<{appState: AppS
           <option value={Path.Thread}>{Path.Thread}</option>
           <option value={Path.Spine}>{Path.Spine}</option>
         </select>
-        <HamburgerMenu/>
+        <HamburgerMenu />
       </header>
       <main className="main">
         {readingView.map((step) => (
@@ -219,7 +215,7 @@ export default function Home() {
   });
   return (
     <div className="app">
-      <ReadingSteps appState={appState} setAppState={setAppState}/>
+      <ReadingSteps appState={appState} setAppState={setAppState} />
       <div className="footer">
         <div id="resetButton" className="card">
           <ResetDatabaseButton />
