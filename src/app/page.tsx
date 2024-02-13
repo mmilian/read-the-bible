@@ -1,7 +1,7 @@
 "use client";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db, Path, ReadingProgress, ReadingStep, resetDatabase } from "./models/db";
-import { PropsWithChildren, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { PropsWithChildren, Suspense, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookOpenReader } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -65,6 +65,7 @@ function buildReadingView(stepList: ReadingStep[], progressList: ReadingProgress
 
 function ResetDatabaseButton() {
   return (
+
     <button
       className="btn"
       onClick={() => {
@@ -73,6 +74,7 @@ function ResetDatabaseButton() {
     >
       Reset All
     </button>
+
   );
 }
 
@@ -199,6 +201,12 @@ function ReadingSteps({ appState, setAppState }: PropsWithChildren<{ appState: A
           <ReadingStep key={step.id} step={step} path={selectedPath} maxProgres={hashStepId ? hashStepId : String(maxProgress.stepId)} />
         ))}
       </main>
+      <div className="footer">
+        <div id="resetButton" className="card">
+          <ResetDatabaseButton />
+        </div>
+      </div>
+
     </>
   );
 }
@@ -215,12 +223,10 @@ export default function Home() {
   });
   return (
     <div className="app">
-      <ReadingSteps appState={appState} setAppState={setAppState} />
-      <div className="footer">
-        <div id="resetButton" className="card">
-          <ResetDatabaseButton />
-        </div>
-      </div>
+      <Suspense fallback={<h2>Loading...</h2>}>
+        <ReadingSteps appState={appState} setAppState={setAppState} />
+      </Suspense>
+
     </div>
   );
 }
