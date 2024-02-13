@@ -68,7 +68,7 @@ const Intro: React.FC = () => (
         Zadaniem aplikacji jest pomóc Ci w wędrówce przez Pismo Święte.
         Po przeczytaniu każdego fragmentu, odznacz go w aplikacji.
         W ten sposób będziesz mógł śledzić swoje postępy.
-        Jak skończysz czytać "Nić przewodnią" przełącz za pomocą przycisku widok na "Kręgosłup".
+        Jak skończysz czytać &#34;Nić przewodnią&#34; przełącz za pomocą przycisku widok na &#34;Kręgosłup&#34;.
       </p>
     </div>
     <div className="card">
