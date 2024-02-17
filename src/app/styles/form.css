@@ -1,0 +1,60 @@
+.form-control {
+  accent-color: var(--color-primary);
+  border: var(--border);
+  border-radius: var(--radii);
+  padding: var(--gutter-100);
+
+  &[type="checkbox"] {
+    --size: 1.375rem;
+
+    width: var(--size);
+    height: var(--size);
+  }
+}
+
+.form-select {
+  display: inline;
+  accent-color: var(--color-primary);
+  border: var(--border);
+  border-radius: var(--radii);
+  font-size: var(--fs-50);
+  padding: var(--gutter-100) 1.75rem var(--gutter-100) var(--gutter-200);
+  appearance: none;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNiAxNic+PHBhdGggZmlsbD0nbm9uZScgc3Ryb2tlPScjMzQzYTQwJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5lam9pbj0ncm91bmQnIHN0cm9rZS13aWR0aD0nMicgZD0nTTIgNWw2IDYgNi02Jy8+PC9zdmc+);
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+  background-color: transparent;
+  color: var(--color-text);
+}
+
+.btn {
+  display: inline-flex;
+  gap: var(--gutter-100);
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter-100) var(--gutter);
+  background-color: transparent;
+  color: var(--color-text);
+  border: 0;
+  border-radius: var(--radii);
+  transition: background-color var(--g-transition), color var(--g-transition);
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+
+  &[data-color-scheme="primary"] {
+    background-color: var(--color-primary);
+    color: var(--color-text-contrast);
+  }
+
+  &[data-variant="circle"] {
+    --size: 2.5rem;
+
+    flex-shrink: 0;
+    padding: 0;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--radii-full);
+  }
+}

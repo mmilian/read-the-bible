@@ -69,9 +69,6 @@ export default function RootLayout({
             #__next {
               margin: 0 auto;
             }
-            h1 {
-              text-align: center;
-            }
             `}</style>
       </head>
       <body className={ibmPlexSerif.className}>{children}</body>

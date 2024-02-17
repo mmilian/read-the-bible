@@ -2,11 +2,9 @@
 import { useEffect, useState } from "react";
 import { ReadingDB, Verse, db } from "../../../models/db";
 import { Chapter, extractBookChapters } from "../../../models/utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import NextLink  from "next/link";
+import { FiX } from "react-icons/fi";
+import NextLink from "next/link";
 import { groupBy } from "@/app/funcUtils";
-
 
 const sortByChapterAndVerse = (verseArr: Verse[]) => {
   const verses = groupBy(verseArr, "chapter");
@@ -66,10 +64,10 @@ function areChapters(book: { name: string; chapters: Chapter[] }) {
 export default function Page({ params }: { params: { slug: string } }) {
   const [verses, setVerses] = useState<[string, Verse[]][]>([]);
   const slug = params.slug;
-  
+
   useEffect(() => {
     const book = extractBookChapters(slug[0]);
-    console.log("Slug: ", slug[1])
+    console.log("Slug: ", slug[1]);
     console.log("Use efect book", book);
     if (book === undefined) {
       console.log("Book is undefined", book);
@@ -117,8 +115,16 @@ export default function Page({ params }: { params: { slug: string } }) {
     <div>
       <header className="header">
         <h1>{decodeURIComponent(slug[0])}</h1>
-        <NextLink href={`/#${slug[1]}`} className="btn" aria-label={slug[1]} scroll={true} title={slug[1]}>
-          <FontAwesomeIcon icon={faArrowLeft} /> powrót
+        <NextLink
+          href={`/#${slug[1]}`}
+          className="btn mr-g"
+          data-variant="circle"
+          data-color-scheme="primary"
+          aria-label={slug[1]}
+          scroll={true}
+          title={slug[1]}
+        >
+          <FiX size={25} />
         </NextLink>
       </header>
       <div className="preview">

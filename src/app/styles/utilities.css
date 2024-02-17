@@ -1,0 +1,19 @@
+.mr-100 {
+  margin-inline-end: var(--gutter-100);
+}
+
+.mr-g {
+  margin-inline-end: var(--gutter);
+}
+
+.mt-300 {
+  margin-block-start: var(--gutter-300);
+}
+
+.bg-surface {
+  background-color: var(--color-surface-bg);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
