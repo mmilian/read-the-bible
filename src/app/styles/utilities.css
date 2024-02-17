@@ -6,8 +6,16 @@
   margin-inline-end: var(--gutter);
 }
 
+.mt-100 {
+  margin-block-start: var(--gutter-100);
+}
+
 .mt-300 {
   margin-block-start: var(--gutter-300);
+}
+
+.mb-300 {
+  margin-block-end: var(--gutter-300);
 }
 
 .bg-surface {

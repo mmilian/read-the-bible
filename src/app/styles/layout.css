@@ -36,7 +36,7 @@
   flex-grow: 0;
   line-height: 1;
   transform: translateY(1px);
-  max-width: 100%;
+  max-width: 150px;
 
   svg {
     width: 100%;
