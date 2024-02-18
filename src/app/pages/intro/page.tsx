@@ -9,7 +9,7 @@ const Intro: React.FC = () => (
       <h1>Wprowadzenie</h1>
       <NextLink
         href="/"
-        className="btn mr-g"
+        className="btn"
         data-variant="circle"
         data-color-scheme="primary"
         aria-label="/"

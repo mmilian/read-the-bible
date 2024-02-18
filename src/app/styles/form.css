@@ -48,6 +48,10 @@
     color: var(--color-text-contrast);
   }
 
+  &[data-variant="outline"] {
+    border: var(--border);
+  }
+
   &[data-variant="circle"] {
     --size: 2.5rem;
 

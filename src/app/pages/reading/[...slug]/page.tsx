@@ -117,7 +117,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         <h1>{decodeURIComponent(slug[0])}</h1>
         <NextLink
           href={`/#${slug[1]}`}
-          className="btn mr-g"
+          className="btn"
           data-variant="circle"
           data-color-scheme="primary"
           aria-label={slug[1]}
@@ -127,19 +127,17 @@ export default function Page({ params }: { params: { slug: string } }) {
           <FiX size={25} />
         </NextLink>
       </header>
-      <div className="preview">
-        <div className="card">
-          {verses.map((chapterVerse, index) => (
-            <div className="text" key={index}>
-              <h2>{chapterVerse[0]}</h2>
-              {chapterVerse[1].map((verse, index) => (
-                <p key={index}>
-                  {verse.verse} {verse.text}
-                </p>
-              ))}
-            </div>
-          ))}
-        </div>
+      <div className="readMode">
+        {verses.map((chapterVerse, index) => (
+          <div className="text" key={index}>
+            <h2>{chapterVerse[0]}</h2>
+            {chapterVerse[1].map((verse, index) => (
+              <p key={index}>
+                {verse.verse} {verse.text}
+              </p>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );

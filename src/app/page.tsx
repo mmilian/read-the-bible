@@ -193,8 +193,8 @@ function ReadingSteps({
         <h1 className="logo">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="25"
+            width="35"
+            height="32"
             viewBox="0 0 28 25"
           >
             <path

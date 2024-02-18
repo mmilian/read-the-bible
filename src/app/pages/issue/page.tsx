@@ -11,7 +11,7 @@ const RaiseTheIssue: React.FC = () => (
 
       <NextLink
         href="/"
-        className="btn mr-g"
+        className="btn"
         data-variant="circle"
         data-color-scheme="primary"
         aria-label="/"

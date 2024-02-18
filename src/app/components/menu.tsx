@@ -8,7 +8,11 @@ const HamburgerMenu: React.FC = () => {
 
   return (
     <>
-      <button onClick={() => setIsOpen(!isOpen)} className="btn">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="btn"
+        data-variant="outline"
+      >
         {isOpen ? <FiX size={25} /> : <FiMenu size={25} />}
       </button>
       {isOpen && (
