@@ -94,6 +94,20 @@ h3 {
 
 .preview {
   padding: var(--gutter);
+
+  p,
+  h2 {
+    margin-top: var(--gutter);
+  }
+
+  p {
+    &::before {
+      content: "";
+      color: var(--color-text-light);
+      border-left: 3px solid var(--gray-200);
+      margin-right: var(--gutter-100);
+    }
+  }
 }
 
 hr {

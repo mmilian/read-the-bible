@@ -25,6 +25,7 @@
   --gray-1000: hsl(var(--gray-h) var(--gray-s) 2%);
 
   --gutter: 1rem;
+  --gutter-50: calc(0.25 * var(--gutter));
   --gutter-100: calc(0.5 * var(--gutter));
   --gutter-200: calc(0.75 * var(--gutter));
   --gutter-300: calc(1.5 * var(--gutter));
