@@ -17,7 +17,7 @@
   accent-color: var(--color-primary);
   border: var(--border);
   border-radius: var(--radii);
-  font-size: var(--fs-50);
+  font-size: var(--fs-75);
   padding: var(--gutter-100) 1.75rem var(--gutter-100) var(--gutter-200);
   appearance: none;
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNiAxNic+PHBhdGggZmlsbD0nbm9uZScgc3Ryb2tlPScjMzQzYTQwJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5lam9pbj0ncm91bmQnIHN0cm9rZS13aWR0aD0nMicgZD0nTTIgNWw2IDYgNi02Jy8+PC9zdmc+);
