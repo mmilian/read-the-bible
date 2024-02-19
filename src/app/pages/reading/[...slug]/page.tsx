@@ -126,8 +126,9 @@ export default function Page({ params }: { params: { slug: string } }) {
         >
           <FiX size={25} />
         </NextLink>
+        <div className="progressBar" />
       </header>
-      <div className="readMode">
+      <div className="readingContent">
         {verses.map((chapterVerse, index) => (
           <div className="text" key={index}>
             <h2>{chapterVerse[0]}</h2>
